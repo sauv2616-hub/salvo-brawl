@@ -28,12 +28,19 @@ Phones can only connect when the game runs from a real website, so it needs to b
 ## Playing
 
 1. Open your site address on the computer and click **Fullscreen**.
-2. Pick an arena. Turn on **Star drops** if you want power-up stars.
+2. Pick an arena and set up the match (see *Match settings*).
 3. Each player scans the QR code with their phone camera. If scanning doesn't work, open the link shown under the code and type the four-letter room code. Phones connect most reliably on the same Wi-Fi as the computer. The code stays the same each time you open the game on that computer, so phones can rejoin with it.
 4. On the phone, pick a tank and tap **READY UP**. When everyone is ready, the brawl starts on its own. The computer can also start it with **START BRAWL** or the Enter key.
 5. Turn phones sideways and go full screen (see below).
 
 Up to 4 players, in any mix of phones, keyboard players and game controllers. You need at least 2 to start.
+
+### Match settings (lobby buttons)
+
+- **MODE · 3 LIVES / MODE · TIMED:** three lives each, last one standing wins; or a timed match. In a timed match you respawn every time, score **+1 for every tank you knock out and −1 each time you go down** (including falls), and the highest score when the clock runs out wins. Use **− / +** to set 1 to 10 minutes. If the top scores are tied, it goes to **sudden death**: the tied players come back on low health and the next knockout wins.
+- **FREE-FOR-ALL / 2V2 TEAMS:** with exactly four players, 2v2 splits everyone into Team A and Team B. Teammates can't hurt each other (missiles and bombs pass through). The button next to it changes who's paired with whom. With fewer than four players the match plays free-for-all.
+- **POWER-UPS:** turns falling power-ups on or off (see *Power-ups*).
+- **MUSIC** and **SOUND:** background music and sound effects on the big screen.
 
 ### Full screen on phones
 
@@ -48,7 +55,8 @@ Even without full screen, the controller blocks pinch and double-tap zoom while 
 
 - **Left half:** put your thumb down anywhere and slide. Left and right drive. **Push up to fire the jetpack.** Pull down to drop through a floating ledge.
 - **Right half:** drag in the direction you want to shoot. The farther you drag, the more power. **Let go to fire.** A quick tap fires your last shot again.
-- **BOMB button** (bottom right): tap it while you're driving to throw a bomb that way. Tap it while standing still to drop a mine under your tank. Tap it while jetpacking to drop a bomb on whoever is below.
+- **BOMB button** (bottom right): put your thumb on it and drag, just like aiming a missile. The farther you drag, the harder you throw, and the big screen shows where the bomb will land. **Let go to throw.** A quick tap without dragging drops a mine under your tank.
+- **SOUND** (lobby): your phone plays its own sounds when your tank gets hit, knocks someone out, grabs a power-up or goes down. iPhones stay silent when the ring/silent switch is set to silent.
 
 ### Keyboard controls
 
@@ -61,34 +69,41 @@ Even without full screen, the controller blocks pinch and double-tap zoom while 
 | Drop through ledge | S | ↓ |
 | Aim barrel | F / H | J / L |
 | Fire | Hold G to charge, release | Hold K to charge, release |
-| Bomb | T | I |
+| Bomb | Hold T to charge, release to throw | Hold I to charge, release to throw |
 
-Hold a drive key while pressing the bomb key to throw it; press it on its own to drop a mine. Esc pauses, M mutes.
+Bombs fly the way your barrel points, so aim with the barrel keys while you hold the bomb key. A quick tap of the bomb key drops a mine. Esc pauses, M mutes.
 
-Game controllers join with A. Left stick drives (A or LB for jetpack), right stick aims and sets power, RT or RB fires, B or Y drops or throws a bomb.
+Game controllers join with A. Left stick drives (A or LB for jetpack), right stick aims and sets power, RT or RB fires. For bombs, hold the right stick in the direction you want and hold B or Y, then let go of B or Y to throw; press B or Y with the right stick centred to drop a mine.
 
 ### Rules
 
-- Everyone has **3 lives**.
+- Everyone has **3 lives** (or unlimited respawns in a timed match).
 - Missiles and bombs drain health. A **direct hit** does the most damage; near misses do less the farther away they land.
 - Every hit **knocks you back**, and the less health you have, the farther you fly. Each player's card shows a **knockback multiplier**: ×1.0 at full health, about ×2.2 at half and nearly ×4 when you're almost out. It turns red at ×2 or more.
-- Your **jetpack** has about 3.5 seconds of fuel and refills while you're on the ground. Use it to reach higher levels and to fly back after a big knockback.
+- Your **jetpack** has about 3.5 seconds of fuel and **refills the moment you land**. Use it to reach higher levels and to fly back after a big knockback.
 - Falling off the map is **instant death**: you lose a life no matter how much health you had.
 - Running out of health also costs a life. You respawn at the top after a couple of seconds, briefly invincible.
-- The last tank with lives left wins.
+- The camera only zooms in and slows down for the **final knockout** of a match.
 
 ### Bombs
 
 - Everyone carries **2 bombs**. Each one recharges 4 seconds after you use it.
-- A bomb does more damage than a missile (up to 30) and has a bigger blast, but it's harder to land.
-- **Thrown bombs** arc a short distance in the direction you're driving, bounce, and explode on their own after about 2.5 seconds, or right away if they hit a tank.
+- A bomb does more damage than a missile (up to 30) and has a bigger blast.
+- **Thrown bombs** are aimed like missiles (see the controls). They arc, bounce, and explode after about 2.5 seconds, or right away if they hit a tank.
 - **Mines** sit where they land, arm after a moment (the light starts blinking), and go off when an enemy drives over them. They last 14 seconds.
 - Your own bombs never hurt you, but their blast still pushes you, so a mine under your own tank works as a rocket jump.
 - Shooting a bomb or mine sets it off, and explosions set off any bombs nearby.
 
-### Star drops (optional)
+### Power-ups (optional)
 
-Turn on **Star drops** in the lobby. A star then falls somewhere on the map every 15–20 seconds. Drive into it to **fire twice as fast for 8 seconds**; your tank glows gold while it lasts. Stars that nobody grabs disappear after a while.
+Turn on **POWER-UPS** in the lobby. One then falls somewhere on the map every 13–20 seconds; drive into it to grab it. Ones nobody grabs disappear after a while.
+
+| Power-up | What it does |
+|---|---|
+| ★ Star | Fire twice as fast for 8 seconds. Your tank glows gold. |
+| ⬢ Shield | A bubble blocks all damage and knockback for 8 seconds. It doesn't stop you falling off the map. |
+| ◌ Invisibility | Your tank fades to a faint shimmer for 8 seconds, with no name tag or aiming line. It flickers into view when you fire or get hit. |
+| ☄ Mega missile | Your next shot is a huge missile: 4× damage, a massive blast and extra knockback. Use it within 15 seconds. |
 
 ### Arenas
 
@@ -101,10 +116,12 @@ Turn on **Star drops** in the lobby. A star then falls somewhere on the map ever
 | Skyforge Archipelago | **Big** (double size) | A chain of four sky islands with three gaps; jetpack between them |
 | Magma Refinery | **Big** (double size) | Refinery decks, a central pillar and catwalks over a lava sea |
 | Glacier Fortress | **Big** (double size) | An ice keep in the middle, sunken valleys either side and high cliffs at the ends. The only big map with no gaps, so most KOs come from knockback |
+| Warp Nexus | **Big** (double size) | Four portals in two linked pairs: the cyan ones join the left station to the right upper deck, the pink ones join the right station to the left upper deck. Drive in one, come out the other. Missiles and bombs go through too |
+| Shattered Skies | **Big** (double size) | Platforms with pale, cracked tops crumble if you stay on them too long (their trim turns red and they shake first), then rebuild about 6 seconds later. The two side islands, the two spawn pads and the top platform never crumble |
 
 ### Tanks
 
-Every tank uses the same missiles, bombs and jetpack. They differ in these stats:
+Each tank has its own look, but every tank is the same size and uses the same missiles, bombs and jetpack. They differ in these stats:
 
 | Tank | Role | Strengths | Trade-offs |
 |---|---|---|---|
