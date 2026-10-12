@@ -30,17 +30,27 @@ Phones can only connect when the game runs from a real website, so it needs to b
 1. Open your site address on the computer and click **Fullscreen**.
 2. Pick an arena and set up the match (see *Match settings*).
 3. Each player scans the QR code with their phone camera. If scanning doesn't work, open the link shown under the code and type the four-letter room code. Phones connect most reliably on the same Wi-Fi as the computer. The code stays the same each time you open the game on that computer, so phones can rejoin with it.
-4. On the phone, pick a tank and tap **READY UP**. When everyone is ready, the brawl starts on its own. The computer can also start it with **START BRAWL** or the Enter key.
+4. On the phone, pick a tank and tap **READY UP**. When everyone is ready, the brawl starts on its own. The computer can also start it with **START BRAWL** or the Enter key, and so can the host phone (see *Host phone*).
 5. Turn phones sideways and go full screen (see below).
 
 Up to 4 players, in any mix of phones, keyboard players and game controllers. You need at least 2 to start.
 
 ### Match settings (lobby buttons)
 
-- **MODE · 3 LIVES / MODE · TIMED:** three lives each, last one standing wins; or a timed match. In a timed match you respawn every time, score **+1 for every tank you knock out and −1 each time you go down** (including falls), and the highest score when the clock runs out wins. Use **− / +** to set 1 to 10 minutes. If the top scores are tied, it goes to **sudden death**: the tied players come back on low health and the next knockout wins.
+- **MODE · LIVES / MODE · TIMED:** a set number of lives each, last one standing wins; or a timed match. The **− / +** buttons next to it set the lives (1 to 9) or the minutes (1 to 10). In a timed match you respawn every time, score **+1 for every tank you knock out and −1 each time you go down** (including falling off), and the highest score when time runs out wins. If it's tied, the tied players go into **sudden death**: low health, and the next knockout wins.
 - **FREE-FOR-ALL / 2V2 TEAMS:** with exactly four players, 2v2 splits everyone into Team A and Team B. Teammates can't hurt each other (missiles and bombs pass through). The button next to it changes who's paired with whom. With fewer than four players the match plays free-for-all.
-- **POWER-UPS:** turns falling power-ups on or off (see *Power-ups*).
-- **MUSIC** and **SOUND:** background music and sound effects on the big screen.
+- **POWER-UPS:** how often power-ups fall: OFF, LOW, NORMAL, HIGH or CHAOS. Click it to step through. The buttons next to it switch each kind on or off (at least one stays on). See *Power-ups*.
+- **MUSIC** and **EFFECTS** sliders: volume for the background music and the sound effects. They're also on the pause screen, and M mutes everything.
+
+### Host phone
+
+The first phone to join is the host (its slot card on the big screen says HOST). Once everyone has joined, nobody needs to touch the computer:
+
+- **In the lobby**, the host's phone shows a match setup panel above the tank list: arrows to pick the arena, the mode, lives or minutes, teams and how often power-ups fall. **START MATCH** starts right away, even if not everyone has tapped ready.
+- **During a match**, the host has a **MENU** button in the top-right corner. It pauses the game and offers **RESUME** or **END MATCH · MAIN MENU**.
+- **After a match**, the host gets **REMATCH** and **MAIN MENU** buttons.
+
+If the host leaves or drops out, the next phone in line becomes the host. The power-up kinds and the volume can only be changed on the computer.
 
 ### Full screen on phones
 
@@ -77,13 +87,17 @@ Game controllers join with A. Left stick drives (A or LB for jetpack), right sti
 
 ### Rules
 
-- Everyone has **3 lives** (or unlimited respawns in a timed match).
+- Everyone has the same number of lives, **3** unless you change it (or unlimited respawns in a timed match).
 - Missiles and bombs drain health. A **direct hit** does the most damage; near misses do less the farther away they land.
 - Every hit **knocks you back**, and the less health you have, the farther you fly. Each player's card shows a **knockback multiplier**: ×1.0 at full health, about ×2.2 at half and nearly ×4 when you're almost out. It turns red at ×2 or more.
 - Your **jetpack** has about 3.5 seconds of fuel and **refills the moment you land**. Use it to reach higher levels and to fly back after a big knockback.
 - Falling off the map is **instant death**: you lose a life no matter how much health you had.
 - Running out of health also costs a life. You respawn at the top after a couple of seconds, briefly invincible.
 - The camera only zooms in and slows down for the **final knockout** of a match.
+
+### Music
+
+The lobby plays a calm groove. Matches switch to a much harder, faster battle track. In a timed match it speeds up through the last minute, a clock ticks through the last ten seconds, and sudden death runs flat out. In a lives match it picks up for the final showdown, once every tank still in the fight is on its last life.
 
 ### Bombs
 
@@ -96,7 +110,7 @@ Game controllers join with A. Left stick drives (A or LB for jetpack), right sti
 
 ### Power-ups (optional)
 
-Turn on **POWER-UPS** in the lobby. One then falls somewhere on the map every 13–20 seconds; drive into it to grab it. Ones nobody grabs disappear after a while.
+Pick how often they fall with the **POWER-UPS** button in the lobby: **LOW** (every 24–34 seconds), **NORMAL** (13–20), **HIGH** (6–10) or **CHAOS** (2–4). Only one is on the map at a time; drive into it to grab it. Ones nobody grabs disappear after a while. The buttons next to POWER-UPS turn each kind on or off.
 
 | Power-up | What it does |
 |---|---|
@@ -116,12 +130,12 @@ Turn on **POWER-UPS** in the lobby. One then falls somewhere on the map every 13
 | Skyforge Archipelago | **Big** (double size) | A chain of four sky islands with three gaps; jetpack between them |
 | Magma Refinery | **Big** (double size) | Refinery decks, a central pillar and catwalks over a lava sea |
 | Glacier Fortress | **Big** (double size) | An ice keep in the middle, sunken valleys either side and high cliffs at the ends. The only big map with no gaps, so most KOs come from knockback |
-| Warp Nexus | **Big** (double size) | Four portals in two linked pairs: the cyan ones join the left station to the right upper deck, the pink ones join the right station to the left upper deck. Drive in one, come out the other. Missiles and bombs go through too |
+| Warp Nexus | **Big** (double size) | Four portals spread across the station in two linked pairs: the cyan pair joins the bottom-left corner to the upper-right deck, the pink pair joins the bottom-right corner to the upper-left deck. Drive in one, come out the other. Missiles and thrown bombs go through too, keeping their speed and direction. The camera holds still on this map and shows the whole station, so teleports don't make it zoom in and out |
 | Shattered Skies | **Big** (double size) | Platforms with pale, cracked tops crumble if you stay on them too long (their trim turns red and they shake first), then rebuild about 6 seconds later. The two side islands, the two spawn pads and the top platform never crumble |
 
 ### Tanks
 
-Each tank has its own look, but every tank is the same size and uses the same missiles, bombs and jetpack. They differ in these stats:
+In the lobby, each player's tank turns on a lit platform in their slot card. Each tank has its own look, but every tank is the same size and uses the same missiles, bombs and jetpack. They differ in these stats:
 
 | Tank | Role | Strengths | Trade-offs |
 |---|---|---|---|

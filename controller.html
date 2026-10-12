@@ -98,6 +98,26 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
   .lob-body{grid-column:2;grid-row:1 / 3;}
 }
 
+/* host: match setup on the first phone */
+.hostbox{display:flex;flex-direction:column;gap:8px;padding:12px;background:rgba(255,255,255,.04);border:1px solid var(--edge);border-top:2px solid var(--pc);}
+.harena{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;}
+.hav{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0;}
+.hav b{font-family:var(--display);font-weight:600;font-size:30px;line-height:.85;padding-top:.08em;letter-spacing:.03em;}
+.hav small{font-size:9.5px;font-weight:700;letter-spacing:.18em;color:var(--pc);min-height:1em;}
+.hbtn{min-height:40px;padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid var(--edge);font-weight:700;font-size:11px;letter-spacing:.12em;}
+.hbtn.arrow{width:48px;min-height:48px;padding:0;font-size:18px;}
+.hbtn.sq{width:40px;padding:0;font-size:18px;letter-spacing:0;}
+.hopts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.hstep{display:inline-flex;align-items:center;gap:6px;}
+.hstep b{font-family:var(--display);font-weight:500;font-size:22px;line-height:1;min-width:66px;text-align:center;letter-spacing:.04em;}
+#hostStart{width:100%;background:var(--ink);color:var(--night);}
+#hostStart[disabled]{background:rgba(255,255,255,.1);color:var(--ink-dim);}
+.menuchip{position:absolute;right:calc(env(safe-area-inset-right,0px) + 8px);top:calc(env(safe-area-inset-top,0px) + 8px);height:40px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--edge);font-size:10px;font-weight:700;letter-spacing:.16em;z-index:3;pointer-events:none;}
+.menuchip b{font-size:15px;letter-spacing:0;}
+.lives b{font-family:var(--display);font-weight:600;font-size:22px;line-height:.8;padding-top:.08em;color:var(--pc);}
+.res .hostrow{margin-top:18px;}
+.sheet-in .ghost{min-height:46px;}
+
 /* full-screen help sheet */
 .sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,8,15,.82);}
 .sheet-in{max-width:420px;padding:20px 22px;background:var(--panel);border-top:2px solid var(--pc);display:flex;flex-direction:column;gap:12px;}
@@ -198,12 +218,28 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
     <div class="lob-actions"><button class="ghost" id="sndBtn" type="button" aria-pressed="true">SOUND · ON</button><button class="ghost fsbtn" type="button">FULL SCREEN</button><button class="ghost" id="leaveBtn" type="button">LEAVE</button></div>
   </div>
   <div class="lob-body">
+    <div class="hostbox" id="hostBox" hidden>
+      <div class="kicker">YOU'RE THE HOST · MATCH SETUP</div>
+      <div class="harena">
+        <button class="hbtn arrow" type="button" data-a="arena" data-d="-1" aria-label="Previous arena">◀</button>
+        <div class="hav"><b id="hArena">ARENA</b><small id="hArenaTag"></small></div>
+        <button class="hbtn arrow" type="button" data-a="arena" data-d="1" aria-label="Next arena">▶</button>
+      </div>
+      <div class="hopts">
+        <button class="hbtn" type="button" data-a="mode" id="hMode">MODE · LIVES</button>
+        <span class="hstep"><button class="hbtn sq" type="button" data-a="count" data-d="-1" aria-label="Less">−</button><b id="hCount">3 LIVES</b><button class="hbtn sq" type="button" data-a="count" data-d="1" aria-label="More">+</button></span>
+        <button class="hbtn" type="button" data-a="teams" id="hTeams">FREE-FOR-ALL</button>
+        <button class="hbtn" type="button" data-a="pair" id="hPair" hidden>P1+P2 VS P3+P4</button>
+        <button class="hbtn" type="button" data-a="pwr" id="hPwr">POWER-UPS · NORMAL</button>
+      </div>
+    </div>
     <div class="kicker">PICK YOUR TANK</div>
     <div class="tanklist" id="tankList"></div>
   </div>
   <div class="lob-side">
-    <p class="lob-note">The brawl starts when everyone is ready, or when the big screen starts it. Turn your phone sideways and go full screen to play.</p>
+    <p class="lob-note" id="lobNote">The brawl starts when everyone is ready, or when the host starts it. Turn your phone sideways and go full screen to play.</p>
     <button class="primary" id="readyBtn" type="button">READY UP</button>
+    <button class="primary" id="hostStart" type="button" hidden>START MATCH</button>
   </div>
 </section>
 
@@ -214,6 +250,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
   <div class="aim" id="aim" hidden><div class="aimbase" id="aimBase"></div><div class="aimline" id="aimLine"><i></i></div><div class="aimtxt" id="aimTxt"></div></div>
   <div class="bombbtn" id="bombBtn" role="button" aria-label="Bomb"><b>BOMB</b><span class="bp" id="bombPips"><i></i><i></i></span><small>DRAG TO THROW<br>TAP: MINE</small></div>
   <div class="fschip" id="fsChip" role="button" aria-label="Full screen">⤢</div>
+  <div class="menuchip" id="menuChip" role="button" aria-label="Pause" hidden><b>❚❚</b>MENU</div>
   <div class="padhud">
     <span class="tg" id="pTag">P1</span>
     <div class="hpw"><span id="hpv">100</span><div class="bar"><i id="hpf"></i></div></div>
@@ -235,9 +272,19 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
     <div class="kicker">MATCH OVER</div>
     <h1 id="rTitle">YOU WIN!</h1>
     <p class="sub" id="rSub"></p>
-    <p>The next match starts from the big screen.</p>
+    <p id="rNote">The next match starts from the big screen or the host's phone.</p>
+    <div class="row hostrow" id="resHost" hidden><button class="primary" id="rRematch" type="button">REMATCH</button><button class="ghost" id="rMenu" type="button">MAIN MENU</button></div>
   </div>
 </section>
+
+<div class="sheet" id="pauseSheet" hidden>
+  <div class="sheet-in">
+    <h3>PAUSED</h3>
+    <p>You're the host. Carry on, or end this match and go back to the main menu to change the arena or settings.</p>
+    <button class="primary" id="pResume" type="button">RESUME</button>
+    <button class="ghost" id="pMenu" type="button">END MATCH · MAIN MENU</button>
+  </div>
+</div>
 
 <div class="sheet" id="fsSheet" hidden>
   <div class="sheet-in">
@@ -262,7 +309,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const store={ get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
 let cid=store.get('salvo-cid'); if(!cid){ cid=Math.random().toString(36).slice(2,12); store.set('salvo-cid',cid); }
 const S={code:'',peer:null,conn:null,welcomed:false,leaving:false,slot:-1,tag:'',tanks:[],tank:0,ready:false,phase:'',you:'play',hud:null,
-  mx:0,up:false,dn:false,aim:false,ax:0,ay:0,shot:0,fx:0,fy:0,bomb:0,baim:false,bx:0,by:0,bm:0,seq:0,hasShot:false,lastKey:'',lastSend:0,lastRx:0,timer:null,tok:0,attempt:0,stage:'',reconnecting:false,altCode:''};
+  mx:0,up:false,dn:false,aim:false,ax:0,ay:0,shot:0,fx:0,fy:0,bomb:0,baim:false,bx:0,by:0,bm:0,seq:0,hasShot:false,lastKey:'',lastSend:0,lastRx:0,timer:null,tok:0,attempt:0,stage:'',reconnecting:false,altCode:'',host:false,cfg:null};
 const VIEWS=['vJoin','vMsg','vLobby','vPad','vResult'];
 let current='';
 function show(id){ if(current===id) return; current=id; VIEWS.forEach(v=>{ $(v).hidden=v!==id; }); setPlaying(id==='vPad'); }
@@ -439,7 +486,7 @@ function onData(d){
       $('meTag').textContent=S.tag; $('pTag').textContent=S.tag;
       renderLobby(); keepAwake(); trapBack(); vib([20,40,20]);
       break; }
-    case 'lobby': S.tank=d.tank|0; S.ready=!!d.ready; S.lteam=typeof d.team==='number'?d.team:-1; S.lmode=d.mode==='time'?'time':'stock'; S.lmins=d.mins|0; renderLobby(); break;
+    case 'lobby': S.tank=d.tank|0; S.ready=!!d.ready; S.lteam=typeof d.team==='number'?d.team:-1; S.lmode=d.mode==='time'?'time':'stock'; S.lmins=d.mins|0; S.llives=d.lives|0; S.host=!!d.host; S.cfg=d.cfg&&typeof d.cfg==='object'?d.cfg:null; renderLobby(); break;
     case 'phase': setPhase(d); break;
     case 'hud': S.hud=d; renderHud(); break;
     case 'buzz': if(Array.isArray(d.p)) vib(d.p.slice(0,10)); if(d.s) phoneSound(String(d.s)); break;
@@ -449,7 +496,8 @@ function onData(d){
   }
 }
 function setPhase(d){
-  S.phase=String(d.phase||''); S.you=d.you==='spectate'?'spectate':'play';
+  S.phase=String(d.phase||''); S.you=d.you==='spectate'?'spectate':'play'; if(typeof d.host==='boolean') S.host=d.host;
+  $('pauseSheet').hidden=!(S.host&&S.phase==='paused'); $('menuChip').hidden=!S.host; $('resHost').hidden=!S.host; $('rNote').hidden=S.host;
   if(S.phase==='lobby'){ S.hud=null; renderLobby(); show('vLobby'); }
   else if(S.phase==='countdown'||S.phase==='battle'||S.phase==='paused'){
     if(S.you==='spectate'){ msg('MATCH IN PROGRESS',"You're in. You'll play from the next match."); return; }
@@ -513,14 +561,28 @@ function renderLobby(){
   });
   if(list._h!==h){ list._h=h; list.innerHTML=h; }
   const rb=$('readyBtn'); rb.textContent=S.ready?'READY ✓ · TAP TO UNDO':'READY UP'; rb.classList.toggle('on',S.ready);
-  const info=[S.lteam>=0?'TEAM '+'AB'[S.lteam]:'',S.lmode==='time'?'TIMED · '+(S.lmins||3)+' MIN':'3 LIVES'].filter(Boolean).join(' · '); setTxt($('lobInfo'),info);
+  const C=S.cfg, cnt=C&&C.cnt?String(C.cnt):S.lmode==='time'?(S.lmins||3)+' MIN':(S.llives||3)+' LIVES';
+  const info=[S.lteam>=0?'TEAM '+'AB'[S.lteam]:'',C&&C.an?String(C.an).toUpperCase():'',S.lmode==='time'?'TIMED · '+cnt:cnt].filter(Boolean).join(' · '); setTxt($('lobInfo'),info);
+  const host=S.host&&!!C; $('hostBox').hidden=!host; $('hostStart').hidden=!host;
+  setTxt($('lobNote'),host?((C.n|0)+((C.n|0)===1?' player':' players')+' in, '+(C.rd|0)+' ready. You pick the arena and settings, and START MATCH begins right away. Turn your phone sideways to play.'):'The brawl starts when everyone is ready, or when the host starts it. Turn your phone sideways and go full screen to play.');
+  if(host){ setTxt($('hArena'),String(C.an||'')); setTxt($('hArenaTag'),String(C.at||'')+(C.na?((C.at?' · ':'')+((C.ai|0)+1)+' OF '+(C.na|0)):''));
+    setTxt($('hMode'),'MODE · '+(C.mode==='time'?'TIMED':'LIVES')); setTxt($('hCount'),cnt); setTxt($('hTeams'),C.teams?'2V2 TEAMS':'FREE-FOR-ALL');
+    $('hPair').hidden=!C.teams; setTxt($('hPair'),String(C.pair||'')); setTxt($('hPwr'),'POWER-UPS · '+String(C.pwr||''));
+    const n=C.n|0, hs=$('hostStart'); hs.disabled=n<2; setTxt(hs,n<2?'NEED 2 PLAYERS':'START MATCH'); }
 }
+function hostSend(a,d){ if(!S.host) return; send(d?{t:'host',a,d}:{t:'host',a}); vib([10]); }
+$('hostBox').addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-a]'); if(!b) return; hostSend(b.dataset.a,b.dataset.d?+b.dataset.d:0); });
+$('hostStart').addEventListener('click',()=>hostSend('start'));
+$('pResume').addEventListener('click',()=>hostSend('resume'));
+$('pMenu').addEventListener('click',()=>hostSend('menu'));
+$('rRematch').addEventListener('click',()=>hostSend('rematch'));
+$('rMenu').addEventListener('click',()=>hostSend('menu'));
 $('tankList').addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('.tcard'); if(!b) return; const i=+b.dataset.i; if(i===S.tank) return; S.tank=i; S.ready=false; send({t:'pick',tank:i}); vib([10]); renderLobby(); });
 $('readyBtn').addEventListener('click',()=>{ S.ready=!S.ready; send({t:'ready',ready:S.ready}); vib(S.ready?[25]:[10]); renderLobby(); });
 
 // ---------- pad input (touch events first, mouse for desktop testing) ----------
-const pad=$('vPad'), stick=$('stick'), knob=$('knob'), aim=$('aim'), aimBase=$('aimBase'), aimLine=$('aimLine'), aimTxt=$('aimTxt'), bombBtn=$('bombBtn'), fsChip=$('fsChip');
-let L=null, R=null, Bm=null, fsTouch=null, drawQueued=false;
+const pad=$('vPad'), stick=$('stick'), knob=$('knob'), aim=$('aim'), aimBase=$('aimBase'), aimLine=$('aimLine'), aimTxt=$('aimTxt'), bombBtn=$('bombBtn'), fsChip=$('fsChip'), menuChip=$('menuChip');
+let L=null, R=null, Bm=null, fsTouch=null, menuTouch=null, drawQueued=false;
 function radii(){ const m=Math.min(innerWidth,innerHeight); return {r1:clamp(m*0.16,46,74),r2:clamp(m*0.32,90,160)}; }
 function inRect(el,x,y,pad){ if(el.hidden) return false; const r=el.getBoundingClientRect(), p=pad||0; return x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p; }
 function queueDraw(){ if(!drawQueued){ drawQueued=true; requestAnimationFrame(draw); } }
@@ -557,7 +619,7 @@ function endB(released){
   if(released&&Bm){ if(S.baim&&Bm.len>0.15){ S.bm=0; S.bomb++; vib([18]); } else if(!Bm.moved){ S.bm=1; S.bomb++; vib([12,30,12]); } }
   Bm=null; S.baim=false; bombBtn.classList.remove('hit'); queueDraw(); sendInput(true);
 }
-function releaseAll(){ if(L) endL(); if(R) endR(false); if(Bm) endB(false); fsTouch=null; }
+function releaseAll(){ if(L) endL(); if(R) endR(false); if(Bm) endB(false); fsTouch=null; menuTouch=null; }
 function draw(){
   drawQueued=false;
   if(L){ stick.hidden=false; stick.style.transform='translate('+(L.ox-L.r).toFixed(1)+'px,'+(L.oy-L.r).toFixed(1)+'px)'; knob.style.transform='translate('+L.kx.toFixed(1)+'px,'+L.ky.toFixed(1)+'px)'; stick.classList.toggle('jet',S.up); }
@@ -575,12 +637,14 @@ function draw(){
 function routeStart(id,x,y){
   if(inRect(bombBtn,x,y,10)){ if(!Bm) startB(id,x,y); return; }
   if(inRect(fsChip,x,y,6)){ fsTouch=id; return; }
+  if(inRect(menuChip,x,y,6)){ menuTouch=id; return; }
   if(x<innerWidth/2){ if(!L) startL(id,x,y); } else if(!R) startR(id,x,y);
 }
 function routeMove(id,x,y){ if(L&&id===L.id) moveL(x,y); else if(R&&id===R.id) moveR(x,y); else if(Bm&&id===Bm.id) moveB(x,y); }
 function routeEnd(id,x,y,released){
   if(L&&id===L.id) endL(); else if(R&&id===R.id) endR(released); else if(Bm&&id===Bm.id) endB(released);
   else if(id===fsTouch){ fsTouch=null; if(released&&inRect(fsChip,x,y,10)) toggleFull(); }
+  else if(id===menuTouch){ menuTouch=null; if(released&&inRect(menuChip,x,y,10)) hostSend('pause'); }
 }
 function reconcile(list){ const ids=new Set(); for(const t of list) ids.add(t.identifier); if(L&&typeof L.id==='number'&&!ids.has(L.id)) endL(); if(R&&typeof R.id==='number'&&!ids.has(R.id)) endR(false); if(Bm&&typeof Bm.id==='number'&&!ids.has(Bm.id)) endB(false); }
 pad.addEventListener('touchstart',e=>{ e.preventDefault(); reconcile(e.touches); for(const t of e.changedTouches) routeStart(t.identifier,t.clientX,t.clientY); },{passive:false});
@@ -605,7 +669,7 @@ function sendInput(force){
 setInterval(()=>sendInput(false),33);
 
 // ---------- HUD ----------
-const H={score:$('scorec'),clock:$('clockc'),team:$('teamc'),livesBox:$('lives'),hpv:$('hpv'),hpf:$('hpf'),fuel:$('fuelf'),rl:$('rlTxt'),rlb:$('rlb'),kbv:$('kbv'),star:$('starc'),ov:$('overlay'),lives:Array.from($('lives').querySelectorAll('i')),bombs:Array.from($('bombPips').querySelectorAll('i'))};
+const H={ml:3,livesN:null,score:$('scorec'),clock:$('clockc'),team:$('teamc'),livesBox:$('lives'),hpv:$('hpv'),hpf:$('hpf'),fuel:$('fuelf'),rl:$('rlTxt'),rlb:$('rlb'),kbv:$('kbv'),star:$('starc'),ov:$('overlay'),lives:Array.from($('lives').querySelectorAll('i')),bombs:Array.from($('bombPips').querySelectorAll('i'))};
 function setTxt(el,v){ if(el._v!==v){ el._v=v; el.textContent=v; } }
 function setW(el,v){ if(el._w!==v){ el._w=v; el.style.width=v; } }
 function setCls(el,c,on){ on=!!on; const key='_c'+c; if(el[key]!==on){ el[key]=on; el.classList.toggle(c,on); } }
@@ -617,7 +681,8 @@ function renderHud(){
     const alive=h.st==='alive';
     setTxt(H.hpv,h.st==='out'?'OUT':alive?String(h.hp|0):'0');
     setW(H.hpf,(alive&&h.max?clamp(h.hp/h.max,0,1)*100:0).toFixed(0)+'%');
-    H.lives.forEach((el,i)=>setCls(el,'lost',i>=(h.lives|0)));
+    const ml=clamp(h.ml|0||3,1,9); if(H.ml!==ml){ H.ml=ml; H.livesBox.innerHTML=ml<=5?'<i></i>'.repeat(ml):'<i></i><b></b>'; H.lives=Array.from(H.livesBox.querySelectorAll('i')); H.livesN=H.livesBox.querySelector('b'); }
+    if(H.livesN) setTxt(H.livesN,'×'+(h.lives|0)); else H.lives.forEach((el,i)=>setCls(el,'lost',i>=(h.lives|0)));
     const tm=!!h.timed; if(H.livesBox.hidden!==tm) H.livesBox.hidden=tm; if(H.score.hidden===tm) H.score.hidden=!tm; if(H.clock.hidden===tm) H.clock.hidden=!tm;
     if(tm){ const sc=h.sc|0, tl=Math.max(0,h.tl|0); setTxt(H.score,(sc>0?'+':'')+sc); setTxt(H.clock,Math.floor(tl/60)+':'+String(tl%60).padStart(2,'0')); setCls(H.clock,'urgent',tl<=10); }
     const team=typeof h.team==='number'&&h.team>=0; if(H.team.hidden===team) H.team.hidden=!team; if(team) setTxt(H.team,'TEAM '+'AB'[h.team]);
@@ -641,7 +706,7 @@ if(pre){ try{ sessionStorage.setItem('salvo-auto',pre); }catch(e){} try{ history
 const auto=pre.length===4?pre:sess.length===4?sess:'';
 codeIn.value=auto||last; syncJoinBtn();
 if(auto){ S.code=auto; S.altCode=last.length===4&&last!==auto?last:''; connect(); } else show('vJoin');
-if(window.__SALVO_PAD_TEST__) window.__pad={S,onData,connect,fire,setPhase,renderHud,show,toggleFull,PS,phoneSound};
+if(window.__SALVO_PAD_TEST__) window.__pad={S,onData,connect,fire,setPhase,renderHud,show,toggleFull,PS,phoneSound,hostSend};
 })();
 </script>
 </body>
