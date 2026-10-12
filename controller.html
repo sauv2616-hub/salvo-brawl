@@ -25,7 +25,7 @@
   --ink-dim:#9aa4c2;
   --panel:rgba(16,20,36,.9);
   --edge:rgba(168,188,255,.18);
-  --p1:#3fd8ff; --p2:#ff8a3d; --p3:#9dff4a; --p4:#ff5ce1;
+  --p1:#3fd8ff; --p2:#ff8a3d; --p3:#9dff4a; --p4:#ff5ce1; --p5:#ffe14a; --p6:#a98bff; --p7:#ff5a5a; --p8:#49f2c2;
   --alert:#ffd04a; --danger:#ff3d55;
   --pc:var(--alert);
   --display:"Teko","Arial Narrow","Roboto Condensed",sans-serif;
@@ -36,7 +36,7 @@
 html,body{height:100%;margin:0;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none;}
 body{background:var(--night);color:var(--ink);font-family:var(--ui);font-size:15px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior:none;position:fixed;inset:0;}
 body.playing,body.playing *{touch-action:none;}
-body.s0{--pc:var(--p1);} body.s1{--pc:var(--p2);} body.s2{--pc:var(--p3);} body.s3{--pc:var(--p4);}
+body.s0{--pc:var(--p1);} body.s1{--pc:var(--p2);} body.s2{--pc:var(--p3);} body.s3{--pc:var(--p4);} body.s4{--pc:var(--p5);} body.s5{--pc:var(--p6);} body.s6{--pc:var(--p7);} body.s7{--pc:var(--p8);}
 button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 :focus-visible{outline:2px solid var(--alert);outline-offset:3px;}
 .view{position:fixed;inset:0;box-sizing:border-box;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 18px) calc(env(safe-area-inset-right,0px) + 18px) calc(env(safe-area-inset-bottom,0px) + 18px) calc(env(safe-area-inset-left,0px) + 18px);}
@@ -109,6 +109,9 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .hbtn.sq{width:40px;padding:0;font-size:18px;letter-spacing:0;}
 .hopts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
 .hstep{display:inline-flex;align-items:center;gap:6px;}
+.hlab{font-size:9.5px;font-weight:700;letter-spacing:.16em;color:var(--ink-dim);margin-right:2px;}
+.hteams{font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--ink-dim);min-height:1em;}
+#teamPick{border-color:var(--pc);color:var(--pc);}
 .hstep b{font-family:var(--display);font-weight:500;font-size:22px;line-height:1;min-width:66px;text-align:center;letter-spacing:.04em;}
 #hostStart{width:100%;background:var(--ink);color:var(--night);}
 #hostStart[disabled]{background:rgba(255,255,255,.1);color:var(--ink-dim);}
@@ -230,7 +233,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 <section class="view" id="vLobby" hidden>
   <div class="lob-head">
     <div class="you"><small>YOU ARE</small><b id="meTag">P1</b><small id="lobInfo" class="lobinfo"></small></div>
-    <div class="lob-actions"><button class="ghost" id="sndBtn" type="button" aria-pressed="true">SOUND · ON</button><button class="ghost fsbtn" type="button">FULL SCREEN</button><button class="ghost" id="leaveBtn" type="button">LEAVE</button></div>
+    <div class="lob-actions"><button class="ghost" id="teamPick" type="button" hidden>TEAM</button><button class="ghost" id="sndBtn" type="button" aria-pressed="true">SOUND · ON</button><button class="ghost fsbtn" type="button">FULL SCREEN</button><button class="ghost" id="leaveBtn" type="button">LEAVE</button></div>
   </div>
   <div class="lob-body">
     <div class="hostbox" id="hostBox" hidden>
@@ -241,12 +244,18 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
         <button class="hbtn arrow" type="button" data-a="arena" data-d="1" aria-label="Next arena">▶</button>
       </div>
       <div class="hopts">
+        <button class="hbtn" type="button" data-a="size" id="hSize" hidden>SIZE · REGULAR</button>
         <button class="hbtn" type="button" data-a="mode" id="hMode">MODE · LIVES</button>
         <span class="hstep"><button class="hbtn sq" type="button" data-a="count" data-d="-1" aria-label="Less">−</button><b id="hCount">3 LIVES</b><button class="hbtn sq" type="button" data-a="count" data-d="1" aria-label="More">+</button></span>
         <button class="hbtn" type="button" data-a="teams" id="hTeams">FREE-FOR-ALL</button>
-        <button class="hbtn" type="button" data-a="pair" id="hPair" hidden>P1+P2 VS P3+P4</button>
+        <button class="hbtn" type="button" data-a="pair" id="hPair" hidden>AUTO TEAMS</button>
         <button class="hbtn" type="button" data-a="pwr" id="hPwr">POWER-UPS · NORMAL</button>
       </div>
+      <div class="hopts">
+        <span class="hstep"><small class="hlab">CPUS</small><button class="hbtn sq" type="button" data-a="cpu" data-d="-1" aria-label="Fewer CPUs">−</button><b id="hCpu">0</b><button class="hbtn sq" type="button" data-a="cpu" data-d="1" aria-label="More CPUs">+</button></span>
+        <span class="hstep"><small class="hlab">LEVEL</small><button class="hbtn sq" type="button" data-a="cpulvl" data-d="-1" aria-label="Easier CPUs">−</button><b id="hLv">5</b><button class="hbtn sq" type="button" data-a="cpulvl" data-d="1" aria-label="Harder CPUs">+</button></span>
+      </div>
+      <div class="hteams" id="hTeamsSum"></div>
     </div>
     <div class="kicker">PICK YOUR TANK</div>
     <div class="tanklist" id="tankList"></div>
@@ -321,7 +330,8 @@ const $=id=>document.getElementById(id);
 const PREFIX='salvobrawl-';
 const LABELS=['SPEED','ARMOR','BLAST','RELOAD','JET'];
 const WPN=['◆ MISSILE','≡ MACHINE GUN','⊕ SNIPER','⬤ BAZOOKA'];
-const COLORS=['#3fd8ff','#ff8a3d','#9dff4a','#ff5ce1'];
+const TEAMN=['RED','BLUE','GREEN','GOLD'];
+const COLORS=['#3fd8ff','#ff8a3d','#9dff4a','#ff5ce1','#ffe14a','#a98bff','#ff5a5a','#49f2c2'];
 const PEER_URLS=['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const now=()=>performance.now();
@@ -499,14 +509,14 @@ function onData(d){
   if(!d||typeof d!=='object') return;
   switch(d.t){
     case 'welcome': {
-      clearTimeout(S.timer); S.welcomed=true; S.reconnecting=false; S.attempt=0; S.altCode=''; S.seq=0; store.set('salvo-last-room',S.code); S.slot=clamp(d.slot|0,0,3); S.tag=String(d.tag||'P'+(S.slot+1));
+      clearTimeout(S.timer); S.welcomed=true; S.reconnecting=false; S.attempt=0; S.altCode=''; S.seq=0; store.set('salvo-last-room',S.code); S.slot=clamp(d.slot|0,0,7); S.tag=String(d.tag||'P'+(S.slot+1));
       S.tanks=Array.isArray(d.tanks)?d.tanks:[]; S.tank=d.tank|0; S.ready=!!d.ready;
       document.body.className='s'+S.slot+(playing?' playing':'');
       const tc=document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content',COLORS[S.slot]);
       $('meTag').textContent=S.tag; $('pTag').textContent=S.tag;
       renderLobby(); keepAwake(); trapBack(); vib([20,40,20]);
       break; }
-    case 'lobby': S.tank=d.tank|0; S.ready=!!d.ready; S.lteam=typeof d.team==='number'?d.team:-1; S.lmode=d.mode==='time'?'time':'stock'; S.lmins=d.mins|0; S.llives=d.lives|0; S.host=!!d.host; S.cfg=d.cfg&&typeof d.cfg==='object'?d.cfg:null; renderLobby(); break;
+    case 'lobby': S.tank=d.tank|0; S.ready=!!d.ready; S.lteam=typeof d.team==='number'?d.team:-1; S.lmode=d.mode==='time'?'time':'stock'; S.lmins=d.mins|0; S.llives=d.lives|0; S.host=!!d.host; S.cfg=d.cfg&&typeof d.cfg==='object'?d.cfg:null; S.teamsOn=!!d.teamsOn; S.myTeam=d.myTeam|0; setCol(d.col); renderLobby(); break;
     case 'phase': setPhase(d); break;
     case 'hud': S.hud=d; renderHud(); break;
     case 'buzz': if(Array.isArray(d.p)) vib(d.p.slice(0,10)); if(d.s) phoneSound(String(d.s)); break;
@@ -515,7 +525,10 @@ function onData(d){
     case 'kicked': S.leaving=true; cleanup(); msg('REMOVED','The big screen took this controller out of the lobby.','JOIN AGAIN',retryNow); break;
   }
 }
+// the big screen tells each phone its colour (its team's colour in team games)
+function setCol(c){ if(typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)||S.col===c) return; S.col=c; document.body.style.setProperty('--pc',c); const tc=document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content',c); }
 function setPhase(d){
+  setCol(d.col);
   S.phase=String(d.phase||''); S.you=d.you==='spectate'?'spectate':'play'; if(typeof d.host==='boolean') S.host=d.host;
   $('pauseSheet').hidden=!(S.host&&S.phase==='paused'); $('menuChip').hidden=!S.host; $('resHost').hidden=!S.host; $('rNote').hidden=S.host;
   if(S.phase==='lobby'){ S.hud=null; renderLobby(); show('vLobby'); }
@@ -582,17 +595,20 @@ function renderLobby(){
   if(list._h!==h){ list._h=h; list.innerHTML=h; }
   const rb=$('readyBtn'); rb.textContent=S.ready?'READY ✓ · TAP TO UNDO':'READY UP'; rb.classList.toggle('on',S.ready);
   const C=S.cfg, cnt=C&&C.cnt?String(C.cnt):S.lmode==='time'?(S.lmins||3)+' MIN':(S.llives||3)+' LIVES';
-  const info=[S.lteam>=0?'TEAM '+'AB'[S.lteam]:'',C&&C.an?String(C.an).toUpperCase():'',S.lmode==='time'?'TIMED · '+cnt:cnt].filter(Boolean).join(' · '); setTxt($('lobInfo'),info);
+  const info=[S.lteam>=0?TEAMN[S.lteam]+' TEAM':'',C&&C.an?String(C.an).toUpperCase():'',S.lmode==='time'?'TIMED · '+cnt:cnt].filter(Boolean).join(' · '); setTxt($('lobInfo'),info);
   const host=S.host&&!!C; $('hostBox').hidden=!host; $('hostStart').hidden=!host;
+  const tp=$('teamPick'); tp.hidden=!S.teamsOn; if(S.teamsOn) setTxt(tp,'TEAM '+(TEAMN[S.myTeam]||'?')+' · SWITCH');
   setTxt($('lobNote'),host?((C.n|0)+((C.n|0)===1?' player':' players')+' in, '+(C.rd|0)+' ready. You pick the arena and settings, and START MATCH begins right away. Turn your phone sideways to play.'):'The brawl starts when everyone is ready, or when the host starts it. Turn your phone sideways and go full screen to play.');
   if(host){ setTxt($('hArena'),String(C.an||'')); setTxt($('hArenaTag'),String(C.at||'')+(C.na?((C.at?' · ':'')+((C.ai|0)+1)+' OF '+(C.na|0)):''));
-    setTxt($('hMode'),'MODE · '+(C.mode==='time'?'TIMED':'LIVES')); setTxt($('hCount'),cnt); setTxt($('hTeams'),C.teams?'2V2 TEAMS':'FREE-FOR-ALL');
-    $('hPair').hidden=!C.teams; setTxt($('hPair'),String(C.pair||'')); setTxt($('hPwr'),'POWER-UPS · '+String(C.pwr||''));
+    $('hSize').hidden=!C.sz; if(C.sz) setTxt($('hSize'),'SIZE · '+String(C.sz));
+    setTxt($('hMode'),'MODE · '+(C.mode==='time'?'TIMED':'LIVES')); setTxt($('hCount'),cnt); setTxt($('hTeams'),C.teams?'TEAMS':'FREE-FOR-ALL');
+    $('hPair').hidden=!C.teams; setTxt($('hPwr'),'POWER-UPS · '+String(C.pwr||'')); setTxt($('hCpu'),String(C.cpu|0)); setTxt($('hLv'),String(C.lv|0||5)); setTxt($('hTeamsSum'),C.teams?String(C.pair||''):'');
     const n=C.n|0, hs=$('hostStart'); hs.disabled=n<2; setTxt(hs,n<2?'NEED 2 PLAYERS':'START MATCH'); }
 }
 function hostSend(a,d){ if(!S.host) return; send(d?{t:'host',a,d}:{t:'host',a}); vib([10]); }
 $('hostBox').addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-a]'); if(!b) return; hostSend(b.dataset.a,b.dataset.d?+b.dataset.d:0); });
 $('hostStart').addEventListener('click',()=>hostSend('start'));
+$('teamPick').addEventListener('click',()=>{ send({t:'team'}); vib([10]); });
 $('pResume').addEventListener('click',()=>hostSend('resume'));
 $('pMenu').addEventListener('click',()=>hostSend('menu'));
 $('rRematch').addEventListener('click',()=>hostSend('rematch'));
@@ -715,7 +731,7 @@ function renderHud(){
     if(H.livesN) setTxt(H.livesN,'×'+(h.lives|0)); else H.lives.forEach((el,i)=>setCls(el,'lost',i>=(h.lives|0)));
     const tm=!!h.timed; if(H.livesBox.hidden!==tm) H.livesBox.hidden=tm; if(H.score.hidden===tm) H.score.hidden=!tm; if(H.clock.hidden===tm) H.clock.hidden=!tm;
     if(tm){ const sc=h.sc|0, tl=Math.max(0,h.tl|0); setTxt(H.score,(sc>0?'+':'')+sc); setTxt(H.clock,Math.floor(tl/60)+':'+String(tl%60).padStart(2,'0')); setCls(H.clock,'urgent',tl<=10); }
-    const team=typeof h.team==='number'&&h.team>=0; if(H.team.hidden===team) H.team.hidden=!team; if(team) setTxt(H.team,'TEAM '+'AB'[h.team]);
+    const team=typeof h.team==='number'&&h.team>=0; if(H.team.hidden===team) H.team.hidden=!team; if(team) setTxt(H.team,(TEAMN[h.team]||'')+' TEAM');
     setW(H.fuel,(clamp(+h.fuel||0,0,1)*100).toFixed(0)+'%');
     const rl=clamp(+h.rl||0,0,1); setTxt(H.rl,rl>0.02?'RELOAD':'READY'); setCls(H.rl,'ready',rl<=0.02); setW(H.rlb,((1-rl)*100).toFixed(0)+'%');
     if(h.mines!==undefined){ const mn=h.mines|0; H.bombs.forEach((el,i)=>setCls(el,'used',i>=mn)); setCls(bombBtn,'empty',(+h.bcd||0)>0.02); } // lit dots = your mines planted (2 max)

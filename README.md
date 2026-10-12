@@ -1,6 +1,6 @@
 # Salvo Brawl
 
-A live 2–4 player tank brawler. The computer (or a TV plugged into it) shows the battle, and each player uses their phone as a controller by scanning a QR code. Keyboards and game controllers work too.
+A live 2–8 player tank brawler. The computer (or a TV plugged into it) shows the battle, and each player uses their phone as a controller by scanning a QR code. Keyboards and game controllers work too.
 
 ## What's in this folder
 
@@ -28,17 +28,21 @@ Phones can only connect when the game runs from a real website, so it needs to b
 ## Playing
 
 1. Open your site address on the computer and click **Fullscreen**.
-2. Pick an arena and set up the match (see *Match settings*).
+2. Pick an arena and its size, and set up the match (see *Match settings*).
 3. Each player scans the QR code with their phone camera. If scanning doesn't work, open the link shown under the code and type the four-letter room code. Phones connect most reliably on the same Wi-Fi as the computer. The code stays the same each time you open the game on that computer, so phones can rejoin with it.
 4. On the phone, pick a tank and tap **READY UP**. When everyone is ready, the brawl starts on its own. The computer can also start it with **START BRAWL** or the Enter key, and so can the host phone (see *Host phone*).
 5. Turn phones sideways and go full screen (see below).
 
-Up to 4 players, in any mix of phones, keyboard players and game controllers. You need at least 2 to start.
+Up to 8 players, in any mix of phones, keyboard players, game controllers and CPU players. You need at least 2 to start.
+
+### CPU players
+
+Click **+ ADD CPU** in the lobby (in the open-slot card) to add a computer-controlled tank, up to 5 of them. Each CPU card has **− / +** to set its level from 1 (slow, wild shots, falls off a lot) to 10 (quick, accurate, recovers well, switches weapons by range, grabs power-ups and dodges). Click a CPU's tank name to change its tank, and **×** to remove it. CPUs are always ready, so the brawl starts as soon as every human is ready; it never starts with CPUs alone. The host phone can also add or remove CPUs and set their level.
 
 ### Match settings (lobby buttons)
 
 - **MODE · LIVES / MODE · TIMED:** a set number of lives each, last one standing wins; or a timed match. The **− / +** buttons next to it set the lives (1 to 9) or the minutes (1 to 10). In a timed match you respawn every time, score **+1 for every tank you knock out and −1 each time you go down** (including falling off), and the highest score when time runs out wins. If it's tied, the tied players go into **sudden death**: low health, and the next knockout wins.
-- **FREE-FOR-ALL / 2V2 TEAMS:** with exactly four players, 2v2 splits everyone into Team A and Team B. Teammates can't hurt each other (missiles and bombs pass through). The button next to it changes who's paired with whom. With fewer than four players the match plays free-for-all.
+- **FREE-FOR-ALL / TEAMS:** with TEAMS on, each player is on the red, blue, green or gold team, and everyone on a team drives that colour. Teams can be any size (1 against 3 is fine). New players join the smaller of red and blue; click the team badge on a player's card to move them, or players can tap **TEAM · SWITCH** on their phone. **AUTO TEAMS** splits everyone evenly between red and blue. Teammates can't hurt each other.
 - **POWER-UPS:** how often power-ups fall: OFF, LOW, NORMAL, HIGH or CHAOS. Click it to step through. The buttons next to it switch each kind on or off (at least one stays on). See *Power-ups*.
 - **MUSIC** and **EFFECTS** sliders: volume for the background music and the sound effects. They're also on the pause screen, and M mutes everything.
 
@@ -145,17 +149,21 @@ Pick how often they fall with the **POWER-UPS** button in the lobby: **LOW** (ev
 
 ### Arenas
 
-| Arena | Size | Notes |
-|---|---|---|
-| Skyforge Isles | Standard | One big island with floating ledges above it |
-| Magma Foundry | Standard | Two decks with a lava pit in the middle |
-| Frostpeak Basin | Standard | High cliffs around a sunken valley |
-| Titan Orbital | **Big** (double size) | Space station with five tiers and two wide gaps to cross |
-| Skyforge Archipelago | **Big** (double size) | A chain of four sky islands with three gaps; jetpack between them |
-| Magma Refinery | **Big** (double size) | Refinery decks, a central pillar and catwalks over a lava sea |
-| Glacier Fortress | **Big** (double size) | An ice keep in the middle, sunken valleys either side and high cliffs at the ends. The only big map with no gaps, so most KOs come from knockback |
-| Warp Nexus | **Big** (double size) | Four portals spread across the station in two linked pairs: the cyan pair joins the bottom-left corner to the upper-right deck, the pink pair joins the bottom-right corner to the upper-left deck. Drive in one, come out the other. Missiles and thrown bombs go through too, keeping their speed and direction. The camera holds still on this map and shows the whole station, so teleports don't make it zoom in and out |
-| Shattered Skies | **Big** (double size) | Platforms with pale, cracked tops crumble if you stay on them too long (their trim turns red and they shake first), then rebuild about 6 seconds later. The two side islands, the two spawn pads and the top platform never crumble |
+Pick one of three styles, then its size, or one of the three special arenas.
+
+| Style | Regular | Big (double size) | Mega (for up to 8 players) |
+|---|---|---|---|
+| Skyforge (sunset sky islands) | Skyforge Isles | Skyforge Archipelago | Skyforge Expanse: a huge island chain, six tiers high |
+| Magma (molten decks) | Magma Foundry | Magma Refinery | Magma Inferno: decks and catwalks over a lava sea |
+| Frostpeak (ice cliffs) | Frostpeak Basin | Glacier Fortress | Frostfall Citadel: deep valleys and towering cliffs |
+
+| Special arena | Notes |
+|---|---|
+| Titan Orbital | A space station with five tiers and two wide gaps |
+| Warp Nexus | Four portals spread across the station in two linked pairs: the cyan pair joins the bottom-left corner to the upper-right deck, the pink pair joins the bottom-right corner to the upper-left deck. Missiles and thrown bombs go through too. The camera holds still and shows the whole station, so teleports don't make it zoom |
+| Rebound Skies | A glowing energy net stretches under the islands. Fall into it and it throws you back up with a full jetpack, but every bounce costs 12 health (and can knock you out if you're low). Fly off the sides past the net and you still fall. Bombs and missiles explode on the net |
+
+Mega maps are wide, so with everyone spread out the camera pulls back a long way and tanks look small. They play best on a big TV.
 
 ### Tanks
 
