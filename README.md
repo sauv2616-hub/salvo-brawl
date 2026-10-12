@@ -66,6 +66,8 @@ Even without full screen, the controller blocks pinch and double-tap zoom while 
 - **Left half:** put your thumb down anywhere and slide. Left and right drive. **Push up to fire the jetpack.** Pull down to drop through a floating ledge.
 - **Right half:** drag in the direction you want to shoot. The farther you drag, the more power. **Let go to fire.** A quick tap fires your last shot again.
 - **BOMB button** (bottom right, unlimited bombs): put your thumb on it and drag, just like aiming a missile. The farther you drag, the harder you throw, and the big screen shows where the bomb will land. **Let go to throw.** A quick tap without dragging drops a mine under your tank.
+- **Weapon button** (above BOMB): tap to switch between missile, machine gun, sniper and bazooka (see *Weapons*). It shows the one you have.
+- **AIR STRIKE button** (next to BOMB): appears when you grab an air strike. Tap it, then steer the big red target on the TV with the left stick and tap **LAUNCH**.
 - **SOUND** (lobby): your phone plays its own sounds when your tank gets hit, knocks someone out, grabs a power-up or goes down. iPhones stay silent when the ring/silent switch is set to silent.
 
 ### Keyboard controls
@@ -80,10 +82,12 @@ Even without full screen, the controller blocks pinch and double-tap zoom while 
 | Aim barrel | F / H | J / L |
 | Fire | Hold G to charge, release | Hold K to charge, release |
 | Bomb | Hold T to charge, release to throw | Hold I to charge, release to throw |
+| Switch weapon | R | U |
+| Air strike (when you have one) | E to aim, W A S D move the target, G or E to launch | O to aim, arrows move the target, K or O to launch |
 
-Bombs fly the way your barrel points, so aim with the barrel keys while you hold the bomb key. A quick tap of the bomb key drops a mine. Esc pauses, M mutes.
+Bombs fly the way your barrel points, so aim with the barrel keys while you hold the bomb key. A quick tap of the bomb key drops a mine. With the machine gun, hold the fire key to keep firing. Esc pauses, M mutes.
 
-Game controllers join with A. Left stick drives (A or LB for jetpack), right stick aims and sets power, RT or RB fires. For bombs, hold the right stick in the direction you want and hold B or Y, then let go of B or Y to throw; press B or Y with the right stick centred to drop a mine.
+Game controllers join with A. Left stick drives (A or LB for jetpack), right stick aims and sets power, RT or RB fires (hold it with the machine gun). B throws bombs: hold the right stick in the direction you want and hold B, then let go of B to throw, or tap B with the stick centred for a mine. Y switches weapon. X calls an air strike: move the target with the left stick, then press X or RT to launch.
 
 ### Rules
 
@@ -98,6 +102,19 @@ Game controllers join with A. Left stick drives (A or LB for jetpack), right sti
 ### Music
 
 The lobby plays a calm groove. Matches switch to a much harder, faster battle track. In a timed match it speeds up through the last minute, a clock ticks through the last ten seconds, and sudden death runs flat out. In a lives match it picks up for the final showdown, once every tank still in the fight is on its last life.
+
+### Weapons
+
+Every tank carries all four and can switch at any time (a short pause after switching stops quick-swap combos). The tank stats still apply on top.
+
+| Weapon | How it fires | Damage | Reload |
+|---|---|---|---|
+| ◆ Missile | Arcs; drag farther (or charge longer) for more power | 22 direct, splash around the blast | About 1 second |
+| ≡ Machine gun | A stream of fast rounds while you hold the aim; just point it | 3 per round, no splash; each round pushes a little | About 8 rounds a second |
+| ⊕ Sniper | A very fast, almost straight shot | 40 direct, small blast | About 2.6 seconds |
+| ⬤ Bazooka | A slow, heavy rocket with a high arc | 30 direct and a huge blast radius with big knockback | About 3.2 seconds |
+
+Your card on the big screen shows which weapon you have.
 
 ### Bombs
 
@@ -116,11 +133,15 @@ Pick how often they fall with the **POWER-UPS** button in the lobby: **LOW** (ev
 
 | Power-up | What it does |
 |---|---|
-| ★ Star | Fire twice as fast for 8 seconds. Your tank glows gold. |
-| ⬢ Shield | A bubble blocks all damage and knockback for 8 seconds. It doesn't stop you falling off the map. |
-| ⇈ Wings | Wings sprout from your tank and your jetpack never runs out for 8 seconds, so you can fly the whole time without landing. |
-| ▾ Tiny | Your tank shrinks to half size for 8 seconds, so missiles and bombs often fly right over it. Knockback stays exactly the same as normal size. |
-| ☄ Mega missile | Your next shot is a huge missile: 4× damage, a massive blast and extra knockback. Use it within 15 seconds. |
+| ★ Star | Fire twice as fast for 16 seconds. Your tank glows gold. |
+| ⬢ Shield | A bubble blocks all damage and knockback for 16 seconds. It doesn't stop you falling off the map. |
+| ⇈ Wings | Wings sprout from your tank and your jetpack never runs out for 16 seconds, so you can fly the whole time without landing. |
+| ▾ Tiny | Your tank shrinks to half size for 16 seconds, so missiles and bombs often fly right over it. Knockback stays exactly the same as normal size. |
+| ✚ Med kit | +15 health straight away (up to your maximum). |
+| ✹ Spam bombs | No bomb cooldown for 16 seconds: throw as fast as you can tap. |
+| ☄ Mega missile | Your next shot is a huge missile: 4× damage, a massive blast and extra knockback. Use it within 30 seconds. |
+| ➶ Heat seeker | Your next shot is a slow missile that chases the nearest enemy for 8 seconds, then explodes in the air if it hasn't hit anything. Shooting it down works too. Use it within 30 seconds. |
+| ◎ Air strike | Kept until you use it (or go down). Calling it shows a giant red target on the big screen; steer it, then launch, and three missiles fly in from the screen and blast the area. While you aim, your tank can't move and can still be hit. It launches by itself after 12 seconds. |
 
 ### Arenas
 

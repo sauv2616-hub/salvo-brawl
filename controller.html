@@ -112,6 +112,21 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .hstep b{font-family:var(--display);font-weight:500;font-size:22px;line-height:1;min-width:66px;text-align:center;letter-spacing:.04em;}
 #hostStart{width:100%;background:var(--ink);color:var(--night);}
 #hostStart[disabled]{background:rgba(255,255,255,.1);color:var(--ink-dim);}
+.wpnbtn{position:absolute;right:calc(env(safe-area-inset-right,0px) + 38px);bottom:calc(env(safe-area-inset-bottom,0px) + 158px);min-width:104px;padding:0 10px;height:46px;box-sizing:border-box;border:2px solid var(--edge);background:rgba(16,20,36,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;z-index:2;pointer-events:none;}
+.wpnbtn b{font-family:var(--display);font-weight:600;font-size:18px;line-height:.85;padding-top:.1em;letter-spacing:.04em;white-space:nowrap;}
+.wpnbtn small{font-size:7.5px;font-weight:700;letter-spacing:.14em;color:var(--ink-dim);}
+.wpnbtn.hit{border-color:var(--pc);background:rgba(255,255,255,.1);}
+.strikebtn{position:absolute;right:calc(env(safe-area-inset-right,0px) + 156px);bottom:calc(env(safe-area-inset-bottom,0px) + 56px);width:78px;height:78px;border-radius:50%;box-sizing:border-box;border:2px solid #ff3838;background:rgba(60,8,10,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;z-index:2;pointer-events:none;animation:strikePulse 1s ease-in-out infinite;}
+.strikebtn b{font-family:var(--display);font-weight:600;font-size:17px;line-height:.85;padding-top:.1em;letter-spacing:.04em;color:#ff5a5a;text-align:center;}
+.strikebtn i{font-style:normal;font-size:20px;line-height:1;color:#ff5a5a;}
+.strikebtn.hit{background:#ff3838;} .strikebtn.hit b,.strikebtn.hit i{color:var(--night);}
+@keyframes strikePulse{50%{box-shadow:0 0 22px rgba(255,56,56,.7);}}
+.launchbtn{position:absolute;left:75%;top:56%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;box-sizing:border-box;border:3px solid #ff3838;background:radial-gradient(circle,rgba(255,56,56,.35),rgba(60,8,10,.92) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;z-index:4;pointer-events:none;}
+.launchbtn b{font-family:var(--display);font-weight:700;font-size:40px;line-height:.8;padding-top:.1em;letter-spacing:.08em;color:#fff;}
+.launchbtn small{font-size:9px;font-weight:700;letter-spacing:.16em;color:#ffb0b0;}
+.launchbtn.hit{background:#ff3838;}
+#vPad.striking .bombbtn,#vPad.striking .wpnbtn,#vPad.striking .strikebtn,#vPad.striking .half.r .guide,#vPad.striking .ztxt{display:none;}
+.striketip{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%);padding:6px 12px;background:rgba(60,8,10,.9);border-top:2px solid #ff3838;font-size:10px;font-weight:700;letter-spacing:.16em;color:#ffb0b0;white-space:nowrap;pointer-events:none;z-index:3;}
 .menuchip{position:absolute;right:calc(env(safe-area-inset-right,0px) + 8px);top:calc(env(safe-area-inset-top,0px) + 8px);height:40px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--edge);font-size:10px;font-weight:700;letter-spacing:.16em;z-index:3;pointer-events:none;}
 .menuchip b{font-size:15px;letter-spacing:0;}
 .lives b{font-family:var(--display);font-weight:600;font-size:22px;line-height:.8;padding-top:.08em;color:var(--pc);}
@@ -156,7 +171,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .bombbtn.hit{background:var(--pc);}
 .bombbtn.hit b,.bombbtn.hit small{color:var(--night);}
 .fschip{position:absolute;left:calc(env(safe-area-inset-left,0px) + 8px);top:calc(env(safe-area-inset-top,0px) + 8px);width:40px;height:40px;box-sizing:border-box;display:grid;place-items:center;background:var(--panel);border:1px solid var(--edge);font-size:20px;line-height:1;z-index:3;pointer-events:none;}
-.padhud{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:6px 14px 6px 12px;background:var(--panel);border-top:2px solid var(--pc);pointer-events:none;white-space:nowrap;z-index:2;}
+.padhud{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:6px 14px 6px 12px;background:var(--panel);border-top:2px solid var(--pc);pointer-events:none;white-space:nowrap;z-index:2;max-width:calc(100% - 250px);box-sizing:border-box;}
 .padhud .tg{font-family:var(--display);font-weight:700;font-size:30px;line-height:.8;padding-top:.1em;color:var(--pc);}
 .hpw{display:flex;flex-direction:column;gap:3px;min-width:76px;}
 .hpw span{font-family:var(--display);font-weight:600;font-size:24px;line-height:.85;padding-top:.08em;font-variant-numeric:tabular-nums;}
@@ -172,7 +187,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .mini small.ready{color:var(--pc);}
 .kbv{font-family:var(--display);font-weight:600;font-size:22px;line-height:.8;padding-top:.08em;}
 .kbv.hot{color:var(--danger);}
-.starc{font-family:var(--display);font-weight:600;font-size:22px;line-height:.8;padding-top:.08em;color:var(--alert);max-width:34vw;overflow:hidden;text-overflow:ellipsis;}
+.starc{font-family:var(--display);font-weight:600;font-size:22px;line-height:.8;padding-top:.08em;color:var(--alert);max-width:30vw;min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;}
 .scorec,.clockc{font-family:var(--display);font-weight:600;font-size:26px;line-height:.8;padding-top:.08em;font-variant-numeric:tabular-nums;}
 .scorec{color:var(--pc);}
 .clockc.urgent{color:var(--danger);}
@@ -185,7 +200,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:80%;padding:12px 18px 9px;background:var(--panel);border-top:2px solid var(--pc);font-family:var(--display);font-weight:600;font-size:30px;line-height:1;letter-spacing:.06em;text-align:center;pointer-events:none;z-index:3;}
 .rotate{display:none;position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);padding:8px 12px;background:var(--panel);font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--alert);pointer-events:none;white-space:nowrap;}
 @media (orientation:landscape) and (max-width:720px){ .padhud{gap:10px;padding:5px 12px 5px 10px;} .mini{min-width:46px;} .hpw{min-width:60px;} .padhud .tg{font-size:26px;} }
-@media (orientation:portrait){ .rotate{display:block;} .padhud{gap:8px;padding:5px 10px;top:calc(env(safe-area-inset-top,0px) + 52px);} .mini{min-width:40px;} .hpw{min-width:56px;} .ztxt{font-size:9px;} .bombbtn{width:84px;height:84px;} .bombbtn b{font-size:22px;} .bombbtn small{display:none;} .ztxt{display:none;} .padhud{flex-wrap:wrap;justify-content:center;max-width:calc(100% - 20px);box-sizing:border-box;} .mini.kbm{display:none;} .half.r .ztxt{right:100px;} }
+@media (orientation:portrait){ .wpnbtn{min-width:84px;bottom:calc(env(safe-area-inset-bottom,0px) + 136px);} .strikebtn{right:calc(env(safe-area-inset-right,0px) + 130px);width:66px;height:66px;} .launchbtn{width:130px;height:130px;margin:-65px 0 0 -65px;} .rotate{display:block;} .padhud{gap:8px;padding:5px 10px;top:calc(env(safe-area-inset-top,0px) + 52px);} .mini{min-width:40px;} .hpw{min-width:56px;} .ztxt{font-size:9px;} .bombbtn{width:84px;height:84px;} .bombbtn b{font-size:22px;} .bombbtn small{display:none;} .ztxt{display:none;} .padhud{flex-wrap:wrap;justify-content:center;max-width:calc(100% - 20px);box-sizing:border-box;} .mini.kbm{display:none;} .half.r .ztxt{right:100px;} }
 @media (prefers-reduced-motion:reduce){ .pulse{animation-duration:2.4s;} }
 </style>
 </head>
@@ -245,12 +260,16 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 
 <section class="view" id="vPad" hidden>
   <div class="half l"><div class="guide"><span>MOVE</span></div><div class="ztxt">DRIVE · PUSH UP TO JETPACK · PULL DOWN TO DROP</div></div>
-  <div class="half r"><div class="guide"><span>AIM</span></div><div class="ztxt">DRAG TO AIM · FARTHER = MORE POWER · LET GO TO FIRE · TAP TO REPEAT</div></div>
+  <div class="half r"><div class="guide"><span>AIM</span></div><div class="ztxt">DRAG TO AIM · FARTHER = MORE POWER · LET GO TO FIRE · MACHINE GUN FIRES WHILE YOU HOLD</div></div>
   <div class="stick" id="stick" hidden><i id="knob"></i></div>
   <div class="aim" id="aim" hidden><div class="aimbase" id="aimBase"></div><div class="aimline" id="aimLine"><i></i></div><div class="aimtxt" id="aimTxt"></div></div>
   <div class="bombbtn" id="bombBtn" role="button" aria-label="Bomb"><b>BOMB</b><span class="bp" id="bombPips" title="Mines planted"><i></i><i></i></span><small>DRAG TO THROW<br>TAP: MINE</small></div>
   <div class="fschip" id="fsChip" role="button" aria-label="Full screen">⤢</div>
   <div class="menuchip" id="menuChip" role="button" aria-label="Pause" hidden><b>❚❚</b>MENU</div>
+  <div class="wpnbtn" id="wpnBtn" role="button" aria-label="Switch weapon"><b id="wpnName">◆ MISSILE</b><small>TAP TO SWITCH</small></div>
+  <div class="strikebtn" id="strikeBtn" role="button" aria-label="Air strike" hidden><i>◎</i><b>AIR<br>STRIKE</b></div>
+  <div class="launchbtn" id="launchBtn" role="button" aria-label="Launch air strike" hidden><b>LAUNCH</b><small>3 MISSILES</small></div>
+  <div class="striketip" id="strikeTip" hidden>MOVE THE RED TARGET WITH THE LEFT STICK · TAP LAUNCH</div>
   <div class="padhud">
     <span class="tg" id="pTag">P1</span>
     <div class="hpw"><span id="hpv">100</span><div class="bar"><i id="hpf"></i></div></div>
@@ -301,6 +320,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 const $=id=>document.getElementById(id);
 const PREFIX='salvobrawl-';
 const LABELS=['SPEED','ARMOR','BLAST','RELOAD','JET'];
+const WPN=['◆ MISSILE','≡ MACHINE GUN','⊕ SNIPER','⬤ BAZOOKA'];
 const COLORS=['#3fd8ff','#ff8a3d','#9dff4a','#ff5ce1'];
 const PEER_URLS=['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
@@ -309,7 +329,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const store={ get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
 let cid=store.get('salvo-cid'); if(!cid){ cid=Math.random().toString(36).slice(2,12); store.set('salvo-cid',cid); }
 const S={code:'',peer:null,conn:null,welcomed:false,leaving:false,slot:-1,tag:'',tanks:[],tank:0,ready:false,phase:'',you:'play',hud:null,
-  mx:0,up:false,dn:false,aim:false,ax:0,ay:0,shot:0,fx:0,fy:0,bomb:0,baim:false,bx:0,by:0,bm:0,seq:0,hasShot:false,lastKey:'',lastSend:0,lastRx:0,timer:null,tok:0,attempt:0,stage:'',reconnecting:false,altCode:'',host:false,cfg:null};
+  mx:0,my:0,up:false,dn:false,aim:false,ax:0,ay:0,shot:0,fx:0,fy:0,bomb:0,baim:false,bx:0,by:0,bm:0,w:0,st:0,as:0,seq:0,hasShot:false,lastKey:'',lastSend:0,lastRx:0,timer:null,tok:0,attempt:0,stage:'',reconnecting:false,altCode:'',host:false,cfg:null};
 const VIEWS=['vJoin','vMsg','vLobby','vPad','vResult'];
 let current='';
 function show(id){ if(current===id) return; current=id; VIEWS.forEach(v=>{ $(v).hidden=v!==id; }); setPlaying(id==='vPad'); }
@@ -581,8 +601,8 @@ $('tankList').addEventListener('click',e=>{ const b=e.target.closest&&e.target.c
 $('readyBtn').addEventListener('click',()=>{ S.ready=!S.ready; send({t:'ready',ready:S.ready}); vib(S.ready?[25]:[10]); renderLobby(); });
 
 // ---------- pad input (touch events first, mouse for desktop testing) ----------
-const pad=$('vPad'), stick=$('stick'), knob=$('knob'), aim=$('aim'), aimBase=$('aimBase'), aimLine=$('aimLine'), aimTxt=$('aimTxt'), bombBtn=$('bombBtn'), fsChip=$('fsChip'), menuChip=$('menuChip');
-let L=null, R=null, Bm=null, fsTouch=null, menuTouch=null, drawQueued=false;
+const pad=$('vPad'), stick=$('stick'), knob=$('knob'), aim=$('aim'), aimBase=$('aimBase'), aimLine=$('aimLine'), aimTxt=$('aimTxt'), bombBtn=$('bombBtn'), fsChip=$('fsChip'), menuChip=$('menuChip'), wpnBtn=$('wpnBtn'), strikeBtn=$('strikeBtn'), launchBtn=$('launchBtn');
+let L=null, R=null, Bm=null, fsTouch=null, menuTouch=null, wpnTouch=null, strikeTouch=null, launchTouch=null, drawQueued=false;
 function radii(){ const m=Math.min(innerWidth,innerHeight); return {r1:clamp(m*0.16,46,74),r2:clamp(m*0.32,90,160)}; }
 function inRect(el,x,y,pad){ if(el.hidden) return false; const r=el.getBoundingClientRect(), p=pad||0; return x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p; }
 function queueDraw(){ if(!drawQueued){ drawQueued=true; requestAnimationFrame(draw); } }
@@ -591,9 +611,9 @@ function moveL(x,y){
   let dx=x-L.ox, dy=y-L.oy; const d=Math.hypot(dx,dy), lim=L.r*1.3;
   if(d>lim){ const k=(d-lim)/d; L.ox+=dx*k; L.oy+=dy*k; dx=x-L.ox; dy=y-L.oy; }
   let vx=dx/L.r, vy=dy/L.r; const m=Math.hypot(vx,vy); if(m>1){ vx/=m; vy/=m; }
-  S.mx=Math.abs(vx)<0.18?0:Math.round(vx*100)/100; S.up=vy<-0.45; S.dn=vy>0.65; L.kx=vx*L.r; L.ky=vy*L.r; queueDraw();
+  S.mx=Math.abs(vx)<0.18?0:Math.round(vx*100)/100; S.my=Math.abs(vy)<0.18?0:-Math.round(vy*100)/100; S.up=vy<-0.45; S.dn=vy>0.65; L.kx=vx*L.r; L.ky=vy*L.r; queueDraw();
 }
-function endL(){ L=null; S.mx=0; S.up=false; S.dn=false; queueDraw(); }
+function endL(){ L=null; S.mx=0; S.my=0; S.up=false; S.dn=false; queueDraw(); }
 function aimDeg(x,y){ let a=Math.atan2(y,x)*180/Math.PI; if(a<-40) a=a<-110?a+360:-40; return clamp(a,-40,220); }
 function startR(id,x,y){ R={id,ox:x,oy:y,r:radii().r2,t:now(),moved:false,len:0,ang:0}; S.aim=false; S.ax=0; S.ay=0; queueDraw(); }
 function moveR(x0,y0){
@@ -619,7 +639,7 @@ function endB(released){
   if(released&&Bm){ if(S.baim&&Bm.len>0.15){ S.bm=0; S.bomb++; vib([18]); } else if(!Bm.moved){ S.bm=1; S.bomb++; vib([12,30,12]); } }
   Bm=null; S.baim=false; bombBtn.classList.remove('hit'); queueDraw(); sendInput(true);
 }
-function releaseAll(){ if(L) endL(); if(R) endR(false); if(Bm) endB(false); fsTouch=null; menuTouch=null; }
+function releaseAll(){ if(L) endL(); if(R) endR(false); if(Bm) endB(false); fsTouch=null; menuTouch=null; wpnTouch=null; strikeTouch=null; launchTouch=null; wpnBtn.classList.remove('hit'); strikeBtn.classList.remove('hit'); launchBtn.classList.remove('hit'); }
 function draw(){
   drawQueued=false;
   if(L){ stick.hidden=false; stick.style.transform='translate('+(L.ox-L.r).toFixed(1)+'px,'+(L.oy-L.r).toFixed(1)+'px)'; knob.style.transform='translate('+L.kx.toFixed(1)+'px,'+L.ky.toFixed(1)+'px)'; stick.classList.toggle('jet',S.up); }
@@ -635,6 +655,11 @@ function draw(){
   else aim.hidden=true;
 }
 function routeStart(id,x,y){
+  if(S.as===2){ // air strike: left stick moves the target, the big button launches
+    if(inRect(launchBtn,x,y,14)){ launchTouch=id; launchBtn.classList.add('hit'); return; }
+    if(x<innerWidth/2&&!L) startL(id,x,y); return; }
+  if(inRect(strikeBtn,x,y,8)){ strikeTouch=id; strikeBtn.classList.add('hit'); return; }
+  if(inRect(wpnBtn,x,y,6)){ wpnTouch=id; wpnBtn.classList.add('hit'); return; }
   if(inRect(bombBtn,x,y,10)){ if(!Bm) startB(id,x,y); return; }
   if(inRect(fsChip,x,y,6)){ fsTouch=id; return; }
   if(inRect(menuChip,x,y,6)){ menuTouch=id; return; }
@@ -645,6 +670,9 @@ function routeEnd(id,x,y,released){
   if(L&&id===L.id) endL(); else if(R&&id===R.id) endR(released); else if(Bm&&id===Bm.id) endB(released);
   else if(id===fsTouch){ fsTouch=null; if(released&&inRect(fsChip,x,y,10)) toggleFull(); }
   else if(id===menuTouch){ menuTouch=null; if(released&&inRect(menuChip,x,y,10)) hostSend('pause'); }
+  else if(id===wpnTouch){ wpnTouch=null; wpnBtn.classList.remove('hit'); if(released&&inRect(wpnBtn,x,y,14)){ S.w=(S.w+1)%WPN.length; setTxt($('wpnName'),WPN[S.w]); vib([10]); sendInput(true); } }
+  else if(id===strikeTouch){ strikeTouch=null; strikeBtn.classList.remove('hit'); if(released&&inRect(strikeBtn,x,y,14)){ S.st++; S.as=2; syncStrike(); vib([30,30,30]); sendInput(true); } }
+  else if(id===launchTouch){ launchTouch=null; launchBtn.classList.remove('hit'); if(released&&inRect(launchBtn,x,y,20)){ S.st++; S.as=0; syncStrike(); vib([60,30,60]); sendInput(true); } }
 }
 function reconcile(list){ const ids=new Set(); for(const t of list) ids.add(t.identifier); if(L&&typeof L.id==='number'&&!ids.has(L.id)) endL(); if(R&&typeof R.id==='number'&&!ids.has(R.id)) endR(false); if(Bm&&typeof Bm.id==='number'&&!ids.has(Bm.id)) endB(false); }
 pad.addEventListener('touchstart',e=>{ e.preventDefault(); reconcile(e.touches); for(const t of e.changedTouches) routeStart(t.identifier,t.clientX,t.clientY); },{passive:false});
@@ -661,10 +689,10 @@ window.addEventListener('resize',()=>{ const land=innerWidth>innerHeight; if(lan
 function sendInput(force){
   if(!playing||!S.conn||!S.conn.open) return;
   const t=now();
-  const k=S.mx+'|'+(S.up?1:0)+'|'+(S.dn?1:0)+'|'+(S.aim?1:0)+'|'+S.ax+'|'+S.ay+'|'+S.shot+'|'+S.bomb+'|'+(S.baim?1:0)+'|'+S.bx+'|'+S.by;
+  const k=S.mx+'|'+S.my+'|'+(S.up?1:0)+'|'+(S.dn?1:0)+'|'+(S.aim?1:0)+'|'+S.ax+'|'+S.ay+'|'+S.shot+'|'+S.bomb+'|'+(S.baim?1:0)+'|'+S.bx+'|'+S.by+'|'+S.w+'|'+S.st;
   if(!force&&k===S.lastKey&&t-S.lastSend<200) return;
   S.lastKey=k; S.lastSend=t;
-  send({t:'in',q:++S.seq,mx:S.mx,up:S.up?1:0,dn:S.dn?1:0,aim:S.aim?1:0,ax:S.ax,ay:S.ay,shot:S.shot,fx:S.fx,fy:S.fy,bomb:S.bomb,baim:S.baim?1:0,bx:S.bx,by:S.by,bm:S.bm});
+  send({t:'in',q:++S.seq,mx:S.mx,my:S.my,w:S.w,st:S.st,up:S.up?1:0,dn:S.dn?1:0,aim:S.aim?1:0,ax:S.ax,ay:S.ay,shot:S.shot,fx:S.fx,fy:S.fy,bomb:S.bomb,baim:S.baim?1:0,bx:S.bx,by:S.by,bm:S.bm});
 }
 setInterval(()=>sendInput(false),33);
 
@@ -673,6 +701,8 @@ const H={ml:3,livesN:null,score:$('scorec'),clock:$('clockc'),team:$('teamc'),li
 function setTxt(el,v){ if(el._v!==v){ el._v=v; el.textContent=v; } }
 function setW(el,v){ if(el._w!==v){ el._w=v; el.style.width=v; } }
 function setCls(el,c,on){ on=!!on; const key='_c'+c; if(el[key]!==on){ el[key]=on; el.classList.toggle(c,on); } }
+// air strike button / launch mode follow what the big screen says (0 none, 1 ready, 2 aiming)
+function syncStrike(){ const a=S.as|0; strikeBtn.hidden=a!==1; launchBtn.hidden=a!==2; $('strikeTip').hidden=a!==2; setCls(pad,'striking',a===2); if(a===2&&R) endR(false); if(a===2&&Bm) endB(false); }
 function renderHud(){
   const h=S.hud; let o='';
   if(S.phase==='paused') o='PAUSED';
@@ -691,6 +721,8 @@ function renderHud(){
     if(h.mines!==undefined){ const mn=h.mines|0; H.bombs.forEach((el,i)=>setCls(el,'used',i>=mn)); setCls(bombBtn,'empty',(+h.bcd||0)>0.02); } // lit dots = your mines planted (2 max)
     else { const bn=h.bombs===undefined?2:(h.bombs|0); H.bombs.forEach((el,i)=>setCls(el,'used',i>=bn)); setCls(bombBtn,'empty',bn<1); }
     const kb=+h.kb||1; setTxt(H.kbv,'×'+kb.toFixed(1)); setCls(H.kbv,'hot',kb>=2);
+    if(typeof h.wp==='number'&&h.wp>=0&&h.wp<WPN.length&&!wpnTouch){ if(S.wAck!==h.wp){ S.wAck=h.wp; S.w=h.wp; } setTxt($('wpnName'),WPN[S.w]); }
+    if(typeof h.as==='number'&&!launchTouch&&!strikeTouch){ const a=alive?h.as|0:0; if(S.as!==a){ S.as=a; syncStrike(); } }
     const pu=typeof h.pu==='string'?h.pu:((+h.star||0)>0?'★ 2× FIRE '+Math.ceil(+h.star):''); if(H.star.hidden===!!pu) H.star.hidden=!pu; if(pu) setTxt(H.star,pu);
     if(S.phase!=='paused'){ if(h.st==='dead') o='DOWN · BACK IN '+Math.max(0,+h.resp||0).toFixed(1)+'S'; else if(h.st==='out') o="YOU'RE OUT · WATCH THE BIG SCREEN"; }
   }
@@ -707,7 +739,7 @@ if(pre){ try{ sessionStorage.setItem('salvo-auto',pre); }catch(e){} try{ history
 const auto=pre.length===4?pre:sess.length===4?sess:'';
 codeIn.value=auto||last; syncJoinBtn();
 if(auto){ S.code=auto; S.altCode=last.length===4&&last!==auto?last:''; connect(); } else show('vJoin');
-if(window.__SALVO_PAD_TEST__) window.__pad={S,onData,connect,fire,setPhase,renderHud,show,toggleFull,PS,phoneSound,hostSend};
+if(window.__SALVO_PAD_TEST__) window.__pad={S,onData,connect,fire,setPhase,renderHud,show,toggleFull,PS,phoneSound,hostSend,syncStrike};
 })();
 </script>
 </body>
