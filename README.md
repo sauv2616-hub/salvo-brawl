@@ -65,7 +65,7 @@ Even without full screen, the controller blocks pinch and double-tap zoom while 
 
 - **Left half:** put your thumb down anywhere and slide. Left and right drive. **Push up to fire the jetpack.** Pull down to drop through a floating ledge.
 - **Right half:** drag in the direction you want to shoot. The farther you drag, the more power. **Let go to fire.** A quick tap fires your last shot again.
-- **BOMB button** (bottom right): put your thumb on it and drag, just like aiming a missile. The farther you drag, the harder you throw, and the big screen shows where the bomb will land. **Let go to throw.** A quick tap without dragging drops a mine under your tank.
+- **BOMB button** (bottom right, unlimited bombs): put your thumb on it and drag, just like aiming a missile. The farther you drag, the harder you throw, and the big screen shows where the bomb will land. **Let go to throw.** A quick tap without dragging drops a mine under your tank.
 - **SOUND** (lobby): your phone plays its own sounds when your tank gets hit, knocks someone out, grabs a power-up or goes down. iPhones stay silent when the ring/silent switch is set to silent.
 
 ### Keyboard controls
@@ -101,10 +101,12 @@ The lobby plays a calm groove. Matches switch to a much harder, faster battle tr
 
 ### Bombs
 
-- Everyone carries **2 bombs**. Each one recharges 4 seconds after you use it.
+- Bombs **never run out**. After each one there's a short cooldown (about 1 second) before you can use the next. The bomb button on the phone dims while it cools down.
 - A bomb does more damage than a missile (up to 30) and has a bigger blast.
-- **Thrown bombs** are aimed like missiles (see the controls). They arc, bounce, and explode after about 2.5 seconds, or right away if they hit a tank.
-- **Mines** sit where they land, arm after a moment (the light starts blinking), and go off when an enemy drives over them. They last 14 seconds.
+- **Thrown bombs** are aimed like missiles (see the controls). They arc, bounce, and explode after about 2.5 seconds, or right away if they hit a tank. You can throw as many as you like.
+- **Mines** sit where they land, arm after a moment (the light starts blinking), and go off when an enemy drives over them. They last 20 seconds.
+- **Two mines at most:** you can have two mines planted at once. Dropping a third sets off both of the planted ones, wherever they are, and plants the new one. That makes a handy remote trigger: plant two, wait for someone to walk past, then drop another. Throwing bombs never sets your mines off.
+- The dots on your phone's bomb button and on your card show how many mines you have planted.
 - Your own bombs never hurt you, but their blast still pushes you, so a mine under your own tank works as a rocket jump.
 - Shooting a bomb or mine sets it off, and explosions set off any bombs nearby.
 
@@ -116,7 +118,8 @@ Pick how often they fall with the **POWER-UPS** button in the lobby: **LOW** (ev
 |---|---|
 | ★ Star | Fire twice as fast for 8 seconds. Your tank glows gold. |
 | ⬢ Shield | A bubble blocks all damage and knockback for 8 seconds. It doesn't stop you falling off the map. |
-| ◌ Invisibility | Your tank fades to a faint shimmer for 8 seconds, with no name tag or aiming line. It flickers into view when you fire or get hit. |
+| ⇈ Wings | Wings sprout from your tank and your jetpack never runs out for 8 seconds, so you can fly the whole time without landing. |
+| ▾ Tiny | Your tank shrinks to half size for 8 seconds, so missiles and bombs often fly right over it. Knockback stays exactly the same as normal size. |
 | ☄ Mega missile | Your next shot is a huge missile: 4× damage, a massive blast and extra knockback. Use it within 15 seconds. |
 
 ### Arenas

@@ -248,7 +248,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
   <div class="half r"><div class="guide"><span>AIM</span></div><div class="ztxt">DRAG TO AIM · FARTHER = MORE POWER · LET GO TO FIRE · TAP TO REPEAT</div></div>
   <div class="stick" id="stick" hidden><i id="knob"></i></div>
   <div class="aim" id="aim" hidden><div class="aimbase" id="aimBase"></div><div class="aimline" id="aimLine"><i></i></div><div class="aimtxt" id="aimTxt"></div></div>
-  <div class="bombbtn" id="bombBtn" role="button" aria-label="Bomb"><b>BOMB</b><span class="bp" id="bombPips"><i></i><i></i></span><small>DRAG TO THROW<br>TAP: MINE</small></div>
+  <div class="bombbtn" id="bombBtn" role="button" aria-label="Bomb"><b>BOMB</b><span class="bp" id="bombPips" title="Mines planted"><i></i><i></i></span><small>DRAG TO THROW<br>TAP: MINE</small></div>
   <div class="fschip" id="fsChip" role="button" aria-label="Full screen">⤢</div>
   <div class="menuchip" id="menuChip" role="button" aria-label="Pause" hidden><b>❚❚</b>MENU</div>
   <div class="padhud">
@@ -688,7 +688,8 @@ function renderHud(){
     const team=typeof h.team==='number'&&h.team>=0; if(H.team.hidden===team) H.team.hidden=!team; if(team) setTxt(H.team,'TEAM '+'AB'[h.team]);
     setW(H.fuel,(clamp(+h.fuel||0,0,1)*100).toFixed(0)+'%');
     const rl=clamp(+h.rl||0,0,1); setTxt(H.rl,rl>0.02?'RELOAD':'READY'); setCls(H.rl,'ready',rl<=0.02); setW(H.rlb,((1-rl)*100).toFixed(0)+'%');
-    const bn=h.bombs===undefined?2:(h.bombs|0); H.bombs.forEach((el,i)=>setCls(el,'used',i>=bn)); setCls(bombBtn,'empty',bn<1);
+    if(h.mines!==undefined){ const mn=h.mines|0; H.bombs.forEach((el,i)=>setCls(el,'used',i>=mn)); setCls(bombBtn,'empty',(+h.bcd||0)>0.02); } // lit dots = your mines planted (2 max)
+    else { const bn=h.bombs===undefined?2:(h.bombs|0); H.bombs.forEach((el,i)=>setCls(el,'used',i>=bn)); setCls(bombBtn,'empty',bn<1); }
     const kb=+h.kb||1; setTxt(H.kbv,'×'+kb.toFixed(1)); setCls(H.kbv,'hot',kb>=2);
     const pu=typeof h.pu==='string'?h.pu:((+h.star||0)>0?'★ 2× FIRE '+Math.ceil(+h.star):''); if(H.star.hidden===!!pu) H.star.hidden=!pu; if(pu) setTxt(H.star,pu);
     if(S.phase!=='paused'){ if(h.st==='dead') o='DOWN · BACK IN '+Math.max(0,+h.resp||0).toFixed(1)+'S'; else if(h.st==='out') o="YOU'RE OUT · WATCH THE BIG SCREEN"; }
