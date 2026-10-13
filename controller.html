@@ -7,12 +7,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Salvo Pad">
+<meta name="apple-mobile-web-app-title" content="Salvo">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
-<title>Salvo Controller</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>Salvo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Teko:wght@400;500;600;700&display=swap">
@@ -48,7 +49,25 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 
 /* join */
 #vJoin{align-items:center;justify-content:center;gap:20px;text-align:center;}
-#joinForm{display:flex;flex-direction:column;align-items:center;gap:14px;}
+#joinForm{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(100%,380px);}
+.joinpick{display:grid;gap:10px;width:100%;margin-top:6px;}
+.joinpick .primary{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 14px 10px;}
+.joinpick .primary b{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.06em;line-height:1;}
+.joinpick .primary small{font-family:var(--ui,inherit);font-size:9.5px;font-weight:700;letter-spacing:.2em;opacity:.75;}
+.joinpick .primary.alt{background:transparent;color:var(--alert);box-shadow:inset 0 0 0 2px var(--alert);}
+.joinpick .primary:disabled{opacity:.4;}
+.joinmore{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+#vJoin .logo{margin-bottom:4px;}
+@media (orientation:landscape) and (max-height:560px){
+  #vJoin{gap:10px;}
+  #vJoin .logo{font-size:42px;margin:0;}
+  #joinForm{display:grid;grid-template-columns:auto minmax(260px,370px);column-gap:30px;row-gap:5px;width:auto;align-items:center;justify-items:center;}
+  #joinForm>label,#joinForm>input{grid-column:1;}
+  #joinForm .joinpick{grid-column:2;grid-row:1/span 4;margin:0;width:100%;}
+  #codeIn{font-size:46px;}
+  #nameIn{font-size:28px;}
+  .joinpick .primary b{font-size:23px;white-space:nowrap;}
+}
 #joinForm label{font-size:11px;font-weight:700;letter-spacing:.3em;color:var(--ink-dim);}
 #codeIn{width:5.4em;box-sizing:border-box;padding:6px 0 0 .3em;background:var(--panel);border:0;border-bottom:3px solid var(--alert);color:var(--ink);font-family:var(--display);font-weight:600;font-size:64px;letter-spacing:.3em;line-height:1;text-align:center;text-transform:uppercase;-webkit-user-select:text;user-select:text;border-radius:0;}
 #codeIn:focus{outline:none;border-bottom-color:var(--ink);}
@@ -418,17 +437,18 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 </head>
 <body>
 <section class="view" id="vJoin" hidden>
-  <div class="kicker">PHONE CONTROLLER</div>
   <div class="logo">SALVO</div>
   <form id="joinForm" autocomplete="off">
-    <label for="codeIn">ROOM CODE</label>
-    <input id="codeIn" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="4" placeholder="····" aria-label="Room code">
     <label for="nameIn">YOUR NAME</label>
     <input id="nameIn" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" placeholder="PLAYER" aria-label="Your name" autocomplete="nickname">
-    <button class="primary" id="joinBtn" type="submit" disabled>JOIN</button>
+    <label for="codeIn">ROOM CODE</label>
+    <input id="codeIn" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="4" placeholder="····" aria-label="Room code">
+    <div class="joinpick">
+      <button class="primary" id="joinBtn" type="submit" disabled><b>CONTROLLER</b><small>NEXT TO THE GAME SCREEN</small></button>
+      <button class="primary alt" id="playHere" type="button" disabled><b>PLAY ON THIS PHONE</b><small>ONLINE · SCREEN AND CONTROLS</small></button>
+    </div>
   </form>
-  <p class="note">The four-letter code is on the big screen. Scanning its QR code fills this in for you. Phones connect best on the same Wi-Fi as the big screen.</p>
-  <button class="ghost fsbtn" type="button">FULL SCREEN</button>
+  <div class="joinmore"><button class="ghost" id="hostHere" type="button">HOST A GAME</button><button class="ghost fsbtn" type="button">FULL SCREEN</button></div>
 </section>
 
 <section class="view" id="vMsg" hidden>
@@ -504,7 +524,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
     <div class="kicker">MATCH OVER</div>
     <h1 id="rTitle">YOU WIN!</h1>
     <p class="sub" id="rSub"></p>
-    <p id="rNote">The next match starts from the big screen or the host's phone.</p>
+    <p id="rNote">The next match starts from the game screen or the host's phone.</p>
     <div class="row hostrow" id="resHost" hidden><button class="primary" id="rRematch" type="button">REMATCH</button><button class="ghost" id="rMenu" type="button">MAIN MENU</button></div>
   </div>
 </section>
@@ -561,7 +581,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-const PREFIX='salvobrawl-';
+const PREFIX='salvobrawlol-';
 const LABELS=['SPEED','ARMOR','BLAST','RELOAD','JET'];
 const WPN=['◆ MISSILE','≡ MACHINE GUN','⊕ SNIPER','⬤ BAZOOKA'];
 const WINFO=['Arcing shot. Hold longer for more power','Rapid fire. Keep aiming to spray','Very fast and hard-hitting, slow reload','Huge blast, slowest shot and reload'];
@@ -573,7 +593,7 @@ const now=()=>performance.now();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const store={ get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
 function cleanName(s){ return String(s==null?'':s).replace(/[\u0000-\u001f<>"&`\\]/g,'').replace(/\s+/g,' ').trim().toUpperCase().slice(0,12); }
-let cid=store.get('salvo-cid'); if(!cid){ cid=Math.random().toString(36).slice(2,12); store.set('salvo-cid',cid); }
+let cid=store.get('salvo-ol-cid-pad'); if(!cid){ cid=Math.random().toString(36).slice(2,12); store.set('salvo-ol-cid-pad',cid); }
 const S={code:'',peer:null,conn:null,welcomed:false,leaving:false,slot:-1,tag:'',tanks:[],tank:0,ready:false,phase:'',you:'play',hud:null,
   mx:0,my:0,up:false,dn:false,aim:false,ax:0,ay:0,shot:0,fx:0,fy:0,bomb:0,baim:false,bx:0,by:0,bm:0,w:0,lo:[0,1],mk:'',st:0,as:0,seq:0,hasShot:false,lastKey:'',lastSend:0,lastRx:0,timer:null,tok:0,attempt:0,stage:'',reconnecting:false,altCode:'',host:false,cfg:null,tab:'tank'};
 const VIEWS=['vJoin','vMsg','vLobby','vPad','vResult'];
@@ -654,7 +674,7 @@ let threeState='loading';
   const s=document.createElement('script'); s.src=THREE_URLS[i++]; s.async=true; s.onload=next; s.onerror=next; document.head.appendChild(s);
 })(); })();
 
-// ---- connection routes (shared by the big screen and the phones) ----
+// ---- connection routes (shared by the game screen and the phones) ----
 // Direct links work on most home Wi-Fi. Phones on mobile data, campus or guest Wi-Fi often can't link
 // directly, so the free relay servers below carry the traffic instead (game input is tiny).
 function sha1(m){ const b=m.slice(), ml=m.length*8; b.push(128); while(b.length%64!==56) b.push(0); b.push(0,0,0,0,(ml>>>24)&255,(ml>>>16)&255,(ml>>>8)&255,ml&255);
@@ -679,7 +699,7 @@ function rtcConfig(){
 }
 
 // ---------- connection ----------
-// Joining has three stages: reach the game server, link to the big screen, get welcomed.
+// Joining has three stages: reach the game server, link to the game screen, get welcomed.
 // Each try gets 16 seconds. A failed try is retried by itself, then the phone says which stage failed and what to try.
 const IN_APP=/FBAN|FBAV|Instagram|Line\/|Snapchat|MicroMessenger|TikTok|musical_ly|; wv\)/i.test(navigator.userAgent||'');
 function hasRTC(){ return !!(window.RTCPeerConnection||window.webkitRTCPeerConnection); }
@@ -699,13 +719,13 @@ function connect(retry){
   }
   if(!hasRTC()){ noRTC(); return; }
   cleanup(); S.welcomed=false; S.leaving=false; S.attempt=retry?S.attempt+1:1; S.stage='server'; const tok=++S.tok;
-  msg(S.reconnecting?'RECONNECTING':'JOINING '+S.code, S.attempt>1?'Trying again ('+S.attempt+' of '+maxTries()+')…':S.reconnecting?'Lost the link to the big screen. Reconnecting…':'Reaching the game server…');
+  msg(S.reconnecting?'RECONNECTING':'JOINING '+S.code, S.attempt>1?'Trying again ('+S.attempt+' of '+maxTries()+')…':S.reconnecting?'Lost the link to the game screen. Reconnecting…':'Reaching the game server…');
   let peer; try{ peer=new P({debug:0,config:rtcConfig()}); }catch(e){ tryFailed(); return; }
   S.peer=peer;
   S.timer=setTimeout(()=>{ if(tok===S.tok&&!S.welcomed) tryFailed(); },16000);
   peer.on('open',()=>{
     if(tok!==S.tok) return;
-    setStage('link','Found the game. Linking to the big screen…');
+    setStage('link','Found the game. Linking to the game screen…');
     const conn=peer.connect(PREFIX+S.code.toLowerCase(),{reliable:true,serialization:'json'});
     S.conn=conn;
     conn.on('open',()=>{ if(S.conn!==conn) return; setStage('hello','Linked. Joining…'); send({t:'hello',cid,name:S.name||''}); });
@@ -731,22 +751,22 @@ function failAt(st,ls){
   S.leaving=true; cleanup();
   const app=IN_APP?' If you opened this from a QR-scanner app, open the link in Chrome or Safari instead.':'';
   if(st==='server') msg("CAN'T REACH THE SERVER","This phone couldn't reach the game's connection server, so this network is probably blocking it. Switch between Wi-Fi and mobile data, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
-  else if(st==='link') msg("CAN'T LINK UP","This phone found the game, but its network wouldn't let it link to the big screen. Put the phone on the same Wi-Fi as the big screen, or switch between Wi-Fi and mobile data, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
-  else msg('NO ANSWER',"The phone linked up, but the big screen didn't answer. Reload the game on the big screen, then try again.",'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
-  $('mDiag').textContent='Stopped at: '+({server:'game server',link:'linking to the big screen',hello:'joining'}[st]||st)+(ls?' · link: '+ls:'');
+  else if(st==='link') msg("CAN'T LINK UP","This phone found the game, but its network wouldn't let it link to the game screen. Put the phone on the same Wi-Fi as the game screen, or switch between Wi-Fi and mobile data, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
+  else msg('NO ANSWER',"The phone linked up, but the game screen didn't answer. Reload the game on the game screen, then try again.",'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
+  $('mDiag').textContent='Stopped at: '+({server:'game server',link:'linking to the game screen',hello:'joining'}[st]||st)+(ls?' · link: '+ls:'');
 }
 function notFound(){
   S.leaving=true; cleanup();
   // a saved link can point at an old game; fall back to the last code that worked
   if(S.altCode&&S.altCode!==S.code){ S.code=S.altCode; S.altCode=''; codeIn.value=S.code; connect(); return; }
-  msg('ROOM NOT FOUND','No game is open with code '+S.code+' right now. Check the code on the big screen. If the game page is just opening, wait a few seconds and try again.','TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
+  msg('ROOM NOT FOUND','No game is open with code '+S.code+' right now. Check the code on the game screen. If the game page is just opening, wait a few seconds and try again.','TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
 }
 function lost(){
   if(S.leaving) return;
   const was=S.welcomed; S.welcomed=false;
   if(!was){ tryFailed(); return; }
   cleanup(); S.reconnecting=true; S.attempt=0;
-  msg('RECONNECTING','Lost the link to the big screen. Reconnecting…');
+  msg('RECONNECTING','Lost the link to the game screen. Reconnecting…');
   setTimeout(()=>{ if(!S.leaving&&!S.welcomed) connect(); },800);
 }
 setInterval(()=>{ if(S.welcomed&&S.lastRx&&now()-S.lastRx>8000){ S.lastRx=0; lost(); } },1000);
@@ -754,7 +774,7 @@ function onData(d){
   if(!d||typeof d!=='object') return;
   switch(d.t){
     case 'welcome': {
-      clearTimeout(S.timer); S.welcomed=true; S.reconnecting=false; S.attempt=0; S.altCode=''; S.seq=0; store.set('salvo-last-room',S.code); S.slot=clamp(d.slot|0,0,7); S.tag=String(d.tag||'P'+(S.slot+1)); if(typeof d.name==='string'&&d.name) S.name=cleanName(d.name);
+      clearTimeout(S.timer); S.welcomed=true; S.reconnecting=false; S.attempt=0; S.altCode=''; S.seq=0; store.set('salvo-ol-last-room',S.code); S.slot=clamp(d.slot|0,0,7); S.tag=String(d.tag||'P'+(S.slot+1)); if(typeof d.name==='string'&&d.name) S.name=cleanName(d.name);
       S.tanks=Array.isArray(d.tanks)?d.tanks:[]; S.tank=d.tank|0; S.ready=!!d.ready;
       document.body.className='s'+S.slot+(playing?' playing':'');
       const tc=document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content',COLORS[S.slot]);
@@ -767,15 +787,15 @@ function onData(d){
     case 'buzz': if(Array.isArray(d.p)) vib(d.p.slice(0,10)); if(d.s) phoneSound(String(d.s)); break;
     case 'ping': break;
     case 'full': S.leaving=true; cleanup(); msg('GAME IS FULL','All 8 player slots are taken. Try again when someone leaves.','TRY AGAIN',retryNow,'CHANGE CODE',changeCode); break;
-    case 'kicked': S.leaving=true; cleanup(); msg('REMOVED','The big screen took this controller out of the lobby.','JOIN AGAIN',retryNow); break;
+    case 'kicked': S.leaving=true; cleanup(); msg('REMOVED','The game screen took this controller out of the lobby.','JOIN AGAIN',retryNow); break;
   }
 }
-// the big screen tells each phone its colour (its team's colour in team games)
+// the game screen tells each phone its colour (its team's colour in team games)
 function setCol(c){ if(typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c)||S.col===c) return; S.col=c; document.body.style.setProperty('--pc',c); const tc=document.querySelector('meta[name="theme-color"]'); if(tc) tc.setAttribute('content',c); }
 function setLo(a){ if(Array.isArray(a)&&a.length===2){ const x=a[0]|0, y=a[1]|0; if(x!==y&&x>=0&&y>=0&&x<WPN.length&&y<WPN.length) S.lo=[x,y]; } }
 function setMk(c){ S.mk=typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c)?c:''; $('meTag').style.color=S.mk; $('pTag').style.color=S.mk; }
 function syncName(){ const n=S.name||S.tag||'P1'; $('meTag').textContent=n; $('meSlot').textContent=S.name?S.tag:''; $('pTag').textContent=n; }
-function saveName(v){ const n=cleanName(v); if(n===(S.name||'')) return; S.name=n; store.set('salvo-name',n); syncName(); if(S.welcomed) send({t:'name',name:n}); }
+function saveName(v){ const n=cleanName(v); store.set('salvo-ol-name',n); if(n===(S.name||'')) return; S.name=n; store.set('salvo-name',n); syncName(); if(S.welcomed) send({t:'name',name:n}); }
 $('menuBtn').addEventListener('click',()=>{ $('nameEdit').value=S.name||''; $('menuSheet').hidden=false; vib([8]); });
 $('menuDone').addEventListener('click',()=>{ saveName($('nameEdit').value); $('menuSheet').hidden=true; });
 $('nameEdit').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('nameEdit').blur(); } });
@@ -838,7 +858,7 @@ syncSnd();
 
 // ---------- join ----------
 const codeIn=$('codeIn');
-function syncJoinBtn(){ $('joinBtn').disabled=codeIn.value.length!==4; }
+function syncJoinBtn(){ const off=codeIn.value.length!==4; $('joinBtn').disabled=off; $('playHere').disabled=off; }
 codeIn.addEventListener('input',()=>{ codeIn.value=codeIn.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4); syncJoinBtn(); });
 $('nameIn').value=S.name||''; $('nameIn').addEventListener('change',()=>saveName($('nameIn').value));
 $('joinForm').addEventListener('submit',e=>{ e.preventDefault(); if(codeIn.value.length!==4) return; codeIn.blur(); saveName($('nameIn').value); S.code=codeIn.value; S.altCode=''; S.reconnecting=false; keepAwake(); connect(); });
@@ -847,7 +867,7 @@ $('leaveBtn').addEventListener('click',()=>{ $('menuSheet').hidden=true; send({t
 // The same tank models as the big screen (copied in from the game when it's built), for the garage below.
 function tankKit(T){
   const TAU=Math.PI*2, col=(h,m)=>{const c=new T.Color(h); c.convertSRGBToLinear(); if(m!==undefined) c.multiplyScalar(m); return c;};
-  const TEX={}, EMBLEMS={}; let ARMOR_TEX=null;
+  const TEX={}, EMBLEMS={}, CLASS_TEX={}; let ARMOR_TEX=null;
 function canvasTex(w,h,draw,srgb){
   const c=document.createElement('canvas'); c.width=w; c.height=h;
   const x=c.getContext('2d'); draw(x,w,h);
@@ -879,9 +899,19 @@ function partBatch(){
 function shadowed(m,cast,recv){ m.castShadow=cast!==false; m.receiveShadow=recv!==false; return m; }
 function sideProfile(pts,depth,bev){ const s=new T.Shape(); pts.forEach(([x,y],i)=>i?s.lineTo(x,y):s.moveTo(x,y)); s.closePath();
   const b=bev||0, g=new T.ExtrudeGeometry(s,{depth:Math.max(0.01,depth-2*b),bevelEnabled:b>0,bevelThickness:b,bevelSize:b,bevelSegments:1}); g.translate(0,0,-Math.max(0.01,depth-2*b)/2); return g; }
-function emblemTex(st){ if(EMBLEMS[st.tag]) return EMBLEMS[st.tag];
-  const t=canvasTex(128,64,(x,w,h)=>{ x.clearRect(0,0,w,h); x.fillStyle='rgba(255,255,255,0.9)'; x.font='700 42px Arial, sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(st.tag,w/2-14,h/2); x.fillRect(w-34,14,6,36); x.fillRect(w-24,14,6,36); },true);
-  EMBLEMS[st.tag]=t; return t; }
+function emblemTex(st,k){ const key=st.tag+':'+(k||''); if(EMBLEMS[key]) return EMBLEMS[key];
+  const t=canvasTex(128,64,(x,w,h)=>{ x.clearRect(0,0,w,h); x.fillStyle='rgba(255,255,255,0.94)'; x.strokeStyle='rgba(255,255,255,0.94)'; x.lineJoin='round'; x.lineCap='round';
+    const P=(pts)=>{ x.beginPath(); pts.forEach(([a,b],i)=>x[i?'lineTo':'moveTo'](a,b)); x.closePath(); x.fill(); }, cx=30, cy=32;
+    if(k==='light') P([[cx+6,cy-26],[cx-14,cy+4],[cx-1,cy+4],[cx-8,cy+26],[cx+15,cy-6],[cx+2,cy-6],[cx+10,cy-26]]);
+    else if(k==='heavy'){ P([[cx-17,cy-20],[cx-10,cy-20],[cx-10,cy-14],[cx-4,cy-14],[cx-4,cy-20],[cx+4,cy-20],[cx+4,cy-14],[cx+10,cy-14],[cx+10,cy-20],[cx+17,cy-20],[cx+17,cy+24],[cx-17,cy+24]]);
+      x.globalCompositeOperation='destination-out'; x.beginPath(); x.moveTo(cx-6,cy+24); x.lineTo(cx-6,cy+8); x.arc(cx,cy+8,6,Math.PI,0); x.lineTo(cx+6,cy+24); x.fill(); x.globalCompositeOperation='source-over'; }
+    else if(k==='mortar'){ const pts=[]; for(let i=0;i<16;i++){ const a=i/16*Math.PI*2-Math.PI/2, r=i%2?11:26; pts.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]); } P(pts); }
+    else if(k==='twin'){ x.lineWidth=8; x.beginPath(); x.moveTo(cx+14,cy-18); x.bezierCurveTo(cx-20,cy-22,cx-20,cy-2,cx,cy); x.bezierCurveTo(cx+20,cy+2,cx+18,cy+24,cx-16,cy+22); x.stroke();
+      x.beginPath(); x.ellipse(cx+15,cy-17,9,6,0.3,0,Math.PI*2); x.fill(); }
+    else { P([[cx-19,cy-22],[cx+19,cy-22],[cx+19,cy-2],[cx+12,cy+14],[cx,cy+25],[cx-12,cy+14],[cx-19,cy-2]]);
+      x.globalCompositeOperation='destination-out'; x.lineWidth=5; x.beginPath(); x.moveTo(cx-9,cy-10); x.lineTo(cx,cy+6); x.lineTo(cx+9,cy-10); x.stroke(); x.globalCompositeOperation='source-over'; }
+    x.font='700 30px Arial, sans-serif'; x.textAlign='left'; x.textBaseline='middle'; x.fillText(st.tag,64,34); },true);
+  EMBLEMS[key]=t; return t; }
 function armorTex(){ if(ARMOR_TEX) return ARMOR_TEX;
   const t=canvasTex(512,512,(x,w,h)=>{
     x.fillStyle='rgb(238,238,238)'; x.fillRect(0,0,w,h);
@@ -897,18 +927,35 @@ function armorTex(){ if(ARMOR_TEX) return ARMOR_TEX;
     for(let i=0;i<26;i++){ const px=rnd()*w, py=rnd()*h, r=20+rnd()*70, g=x.createRadialGradient(px,py,0,px,py,r); g.addColorStop(0,'rgba(60,52,44,0.16)'); g.addColorStop(1,'rgba(60,52,44,0)'); x.fillStyle=g; x.fillRect(px-r,py-r,r*2,r*2); }
   },true);
   t.wrapS=t.wrapT=T.RepeatWrapping; t.repeat.set(0.85,0.85); t.anisotropy=4; ARMOR_TEX=t; return t; }
+function classTex(k){ if(!k||k==='standard') return armorTex(); if(CLASS_TEX[k]) return CLASS_TEX[k];
+  const base=armorTex().image;
+  const t=canvasTex(512,512,(x,w,h)=>{ x.drawImage(base,0,0,w,h);
+    let sd=k.length*97+13; const rnd=()=>{ sd=(sd*16807)%2147483647; return sd/2147483647; };
+    if(k==='light'){ x.fillStyle='rgba(22,22,28,0.78)';
+      for(let i=-2;i<5;i++){ const o=i*170; x.beginPath(); x.moveTo(o,0); x.lineTo(o+56,0); x.lineTo(o+56+128,h/2); x.lineTo(o+56,h); x.lineTo(o,h); x.lineTo(o+128,h/2); x.closePath(); x.fill(); } }
+    else if(k==='heavy'){ x.strokeStyle='rgba(20,20,26,0.75)'; x.lineWidth=7; for(let r=0;r<=512;r+=128){ x.beginPath(); x.moveTo(0,r); x.lineTo(w,r); x.stroke(); }
+      for(let r=0;r<4;r++) for(let c=(r%2)*96;c<=w;c+=192){ x.beginPath(); x.moveTo(c,r*128); x.lineTo(c,r*128+128); x.stroke(); }
+      x.fillStyle='rgba(255,255,255,0.32)'; for(let r=0;r<4;r++) x.fillRect(0,r*128+6,w,10);
+      for(let r=0;r<4;r++) for(let c=16;c<w;c+=32){ x.fillStyle='rgba(30,30,36,0.8)'; x.beginPath(); x.arc(c,r*128+22,4,0,Math.PI*2); x.fill(); } }
+    else if(k==='mortar'){ x.fillStyle='rgba(18,18,22,0.72)'; for(let i=0;i<14;i++){ const bw=60+rnd()*140, bh=30+rnd()*70; x.fillRect(((rnd()*8)|0)*64,((rnd()*8)|0)*64,bw,bh); }
+      x.fillStyle='rgba(18,18,22,0.6)'; for(let i=0;i<512;i+=64) x.fillRect(0,i,w,5); }
+    else if(k==='twin'){ const tones=['rgba(20,26,20,0.62)','rgba(60,70,58,0.42)','rgba(255,255,255,0.4)'];
+      for(let i=0;i<70;i++){ x.fillStyle=tones[i%3]; const cx=rnd()*w, cy=rnd()*h, r=24+rnd()*60, n=4+((rnd()*3)|0); x.beginPath();
+        for(let q=0;q<n;q++){ const a=q/n*Math.PI*2+rnd()*0.8, rr=r*(0.5+rnd()*0.7); x[q?'lineTo':'moveTo'](cx+Math.cos(a)*rr*1.6,cy+Math.sin(a)*rr*0.7); } x.closePath(); x.fill(); } }
+  },true);
+  t.wrapS=t.wrapT=T.RepeatWrapping; t.repeat.set(0.85,0.85); t.anisotropy=4; return CLASS_TEX[k]=t; }
 const TANK_STYLE={
-  standard:{len:2.86,th:0.68,wheels:5,wr:0.175,tz:0.6,hull:[[-1.4,0.6],[1.18,0.6],[1.52,0.84],[1.26,1.06],[-1.28,1.08],[-1.46,0.88]],hd:1.3},
-  light:{len:2.8,th:0.62,wheels:5,wr:0.16,tz:0.6,hull:[[-1.42,0.56],[1.08,0.56],[1.56,0.76],[1.02,0.98],[-1.3,1.0],[-1.48,0.8]],hd:1.24},
-  heavy:{len:2.9,th:0.68,wheels:6,wr:0.16,tz:0.62,hull:[[-1.42,0.6],[1.2,0.6],[1.5,0.86],[1.3,1.12],[-1.32,1.14],[-1.46,0.9]],hd:1.34},
-  mortar:{len:2.86,th:0.68,wheels:5,wr:0.175,tz:0.6,hull:[[-1.42,0.6],[1.24,0.6],[1.5,0.82],[1.36,1.04],[-1.4,1.06],[-1.46,0.86]],hd:1.3},
-  twin:{len:2.84,th:0.64,wheels:5,wr:0.165,tz:0.6,hull:[[-1.44,0.58],[1.12,0.58],[1.55,0.8],[1.12,1.02],[-1.24,1.04],[-1.5,0.84]],hd:1.26}
+  standard:{len:2.9,th:0.68,wheels:6,wr:0.165,tz:0.62,ty:1.08,hull:[[-1.44,0.6],[1.18,0.6],[1.56,0.84],[1.28,1.08],[-1.3,1.1],[-1.48,0.9]],hd:1.32},
+  light:{len:3.02,th:0.58,wheels:6,wr:0.148,tz:0.62,ty:0.99,hull:[[-1.52,0.52],[1.12,0.52],[1.68,0.72],[1.04,0.95],[-1.34,0.98],[-1.56,0.78]],hd:1.26},
+  heavy:{len:2.92,th:0.72,wheels:6,wr:0.17,tz:0.64,ty:1.15,hull:[[-1.44,0.62],[1.18,0.62],[1.5,0.92],[1.32,1.18],[-1.34,1.2],[-1.48,0.94]],hd:1.4},
+  mortar:{len:3.06,th:0.7,wheels:6,wr:0.17,tz:0.62,ty:1.06,hull:[[-1.54,0.6],[1.26,0.6],[1.58,0.82],[1.42,1.04],[-1.42,1.06],[-1.56,0.86]],hd:1.34},
+  twin:{len:2.98,th:0.6,wheels:6,wr:0.15,tz:0.6,ty:1.0,hull:[[-1.52,0.54],[1.1,0.54],[1.7,0.76],[1.14,0.98],[-1.26,1.0],[-1.54,0.8]],hd:1.28}
 };
 const SHAPES={
   standard:{scale:1,bR:0.08,bL:1.55,brR:0.115,twin:false,turret:'dome',tS:1},
-  light:{scale:0.9,bR:0.065,bL:1.8,brR:0.09,twin:false,turret:'dome',tS:0.86,fin:true},
+  light:{scale:0.9,bR:0.06,bL:1.9,brR:0.085,twin:false,turret:'dome',tS:0.86,fin:true},
   heavy:{scale:1.12,bR:0.11,bL:1.45,brR:0.16,twin:false,turret:'dome',tS:1.15,armor:true},
-  mortar:{scale:1.02,bR:0.15,bL:1.0,brR:0.21,twin:false,turret:'box',tS:1.05},
+  mortar:{scale:1.03,bR:0.17,bL:1.08,brR:0.24,twin:false,turret:'box',tS:1.05},
   twin:{scale:0.96,bR:0.06,bL:1.6,brR:0.085,twin:true,turret:'dome',tS:0.95}
 };
   Object.values(SHAPES).forEach(s=>{ s.tip=0.3+s.bL+0.25; });
@@ -916,7 +963,7 @@ function buildTankMesh(st,sh,styleKey){
   const S=TANK_STYLE[styleKey]||TANK_STYLE.standard;
   const root=new T.Group(), body=new T.Group(); root.add(body);
   const M={
-    paint:new T.MeshStandardMaterial({color:col(st.paint),metalness:.5,roughness:.36,map:armorTex()}),
+    paint:new T.MeshStandardMaterial({color:col(st.paint),metalness:.5,roughness:.36,map:classTex(styleKey)}),
     paint2:new T.MeshStandardMaterial({color:col(st.paint2),metalness:.6,roughness:.45,map:armorTex()}),
     rubber:new T.MeshStandardMaterial({color:col('#16171c'),metalness:.15,roughness:.92}),
     steel:new T.MeshStandardMaterial({color:col('#a3acb8'),metalness:.9,roughness:.3}),
@@ -931,7 +978,7 @@ function buildTankMesh(st,sh,styleKey){
   { const rc=col(st.color); [['paint',0.62],['paint2',0.55],['gun',0.42],['dark',0.42],['rubber',0.36],['steel',0.3]].forEach(([k,v])=>rimify(M[k],rc,v)); }
   const B=partBatch(), A=(p,m,g,x,y,z,rx,ry,rz,sx,sy,sz)=>B.add(p,m,g,x,y,z,rx,ry,rz,sx,sy,sz);
   const box=(w,h,d)=>new T.BoxGeometry(w,h,d), cyl=(rt,rb,h,n)=>new T.CylinderGeometry(rt,rb,h,n||14);
-  const turret=new T.Group(); turret.position.set(0,1.08,0); turret.scale.setScalar(sh.tS); root.add(turret);
+  const turret=new T.Group(); turret.position.set(0,S.ty||1.08,0); turret.scale.setScalar(sh.tS); root.add(turret);
   const pivot=new T.Group(); pivot.position.set(0,1.36,0); root.add(pivot);
   const recoil=new T.Group(); pivot.add(recoil);
   const wheels=[];
@@ -977,7 +1024,7 @@ function buildTankMesh(st,sh,styleKey){
   for(let k=0;k<6;k++) A(body,M.dark,box(0.05,0.03,S.hd*0.62),-1.18+k*0.09,S.hull[4][1]+0.012,0);
   A(body,M.glow,box(0.6,0.03,0.9),0.62,S.hull[3][1]+0.02,0);
 
-  const emblem=(parent,x,y,z,w,flip)=>{ const m=new T.Mesh(new T.PlaneGeometry(w,w*0.5),new T.MeshStandardMaterial({map:emblemTex(st),transparent:true,depthWrite:false,roughness:.6,metalness:.1,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+  const emblem=(parent,x,y,z,w,flip)=>{ const m=new T.Mesh(new T.PlaneGeometry(w,w*0.5),new T.MeshStandardMaterial({map:emblemTex(st,styleKey),transparent:true,depthWrite:false,roughness:.6,metalness:.1,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
     m.position.set(x,y,z); if(flip){ m.rotation.y=Math.PI; } parent.add(m); M['emblem'+(flip?'B':'A')]=m.material; };
 
   if(styleKey==='light'){
@@ -985,13 +1032,15 @@ function buildTankMesh(st,sh,styleKey){
     for(const s of [-1,1]){
       A(body,M.paint2,box(2.5,0.16,0.06),0.05,0.56,s*0.8,0,0,0);
       A(body,M.glow,box(2.2,0.03,0.02),0.05,0.6,s*0.835); A(body,M.glow,box(1.4,0.02,0.02),0.25,0.53,s*0.835);
-      const ex=cyl(0.07,0.06,0.34,10); A(body,M.gun,ex,-1.36,0.86,s*0.48,0,0,Math.PI/2.4);
-      A(body,M.glow,new T.TorusGeometry(0.055,0.015,6,12),-1.52,0.8,s*0.48,0,Math.PI/2,0);
-      A(body,M.gun,box(0.05,0.3,0.05),-1.28,1.18,s*0.42);
+      A(body,M.dark,box(0.9,0.05,0.04),0.6,0.88,s*0.64,0,0,-0.12);
     }
-    A(body,M.lamp,box(0.04,0.03,0.9),1.52,0.79,0);
-    A(body,M.paint2,box(0.62,0.05,1.3),-1.3,1.36,0,0,0,0.12);
-    A(body,M.glow,box(0.5,0.02,1.24),-1.27,1.39,0,0,0,0.12);
+    A(body,M.lamp,box(0.04,0.03,0.9),1.64,0.75,0);
+    // twin ring thrusters on the rear deck
+    const soot=new T.MeshStandardMaterial({color:col('#07080a'),roughness:1,metalness:0});
+    for(const s of [-1,1]){ A(body,M.paint2,cyl(0.15,0.18,0.36,20),-1.27,1.06,s*0.44,0,0,Math.PI/2);
+      A(body,M.gun,new T.TorusGeometry(0.165,0.035,8,22),-1.45,1.06,s*0.44,0,Math.PI/2,0);
+      A(body,soot,new T.CircleGeometry(0.14,20),-1.44,1.06,s*0.44,0,-Math.PI/2,0);
+      A(body,M.paint2,box(0.36,0.06,0.08),-1.16,1.3,s*0.44); }
     const tw=sideProfile([[-0.7,0],[0.55,0],[0.84,0.13],[0.48,0.33],[-0.58,0.35],[-0.78,0.17]],0.98,0.04);
     A(turret,M.gun,cyl(0.6,0.64,0.1,24),0,0.05,0);
     A(turret,M.paint,tw,0,0.08,0);
@@ -1008,11 +1057,14 @@ function buildTankMesh(st,sh,styleKey){
       A(body,M.paint2,extrudeBox(2.84,0.44,0.12,0.03,0.03),0.04,0.6,s*0.82);
       for(let k=0;k<10;k++) A(body,M.steel,cyl(0.025,0.025,0.03,6),-1.25+k*0.28,0.74,s*0.885,Math.PI/2,0,0);
       A(body,M.glow,box(2.5,0.035,0.02),0.04,0.46,s*0.885);
+      A(body,M.paint2,extrudeBox(2.5,0.22,0.1,0.03,0.03),-0.04,1.02,s*0.74);
+      for(let k=0;k<6;k++) A(body,M.dark,box(0.04,0.18,0.02),-1.1+k*0.42,1.02,s*0.795);
       const ex=cyl(0.08,0.08,0.4,10); A(body,M.gun,ex,-1.3,1.2,s*0.46);
     }
     { const nA=Math.atan2(0.2,0.26), nx=Math.cos(nA), ny=Math.sin(nA);
       for(let r=0;r<2;r++){ const t=(r+0.5)/2, px=1.5-0.2*t+nx*0.035, py=0.86+0.26*t+ny*0.035; for(let c=0;c<4;c++) A(body,M.paint2,extrudeBox(0.07,0.13,0.27,0.02,0.02),px,py,-0.45+c*0.3,0,0,nA); } }
     { const nA=Math.atan2(-0.3,0.26); for(let c=0;c<4;c++) A(body,M.dark,box(0.04,0.11,0.24),1.36+Math.cos(nA)*0.02,0.73+Math.sin(nA)*0.02,-0.42+c*0.28,0,0,nA); }
+    A(body,M.paint2,extrudeBox(0.12,0.34,1.5,0.03,0.03),1.6,0.6,0,0,0,0.35); A(body,M.steel,box(0.05,0.04,1.46),1.68,0.44,0,0,0,0.35);
     A(turret,M.gun,cyl(0.68,0.74,0.12,28),0,0.06,0);
     const tb=sideProfile([[-0.82,0],[0.62,0],[0.84,0.18],[0.66,0.48],[-0.74,0.5],[-0.86,0.26]],1.24,0.05); A(turret,M.paint,tb,0,0.1,0);
     for(const s of [-1,1]) for(let r=0;r<2;r++) for(let c=0;c<3;c++) A(turret,M.paint2,extrudeBox(0.3,0.17,0.07,0.02,0.02),-0.4+c*0.34,0.24+r*0.19,s*0.66);
@@ -1056,25 +1108,26 @@ function buildTankMesh(st,sh,styleKey){
     A(body,M.glow,box(1.8,0.025,0.05),-0.1,S.hull[4][1]+0.015,0);
     A(body,M.paint2,box(0.36,0.05,1.2),-1.38,1.24,0,0,0,0.25); A(body,M.gun,box(0.05,0.2,0.05),-1.36,1.12,0.45); A(body,M.gun,box(0.05,0.2,0.05),-1.36,1.12,-0.45);
     A(turret,M.gun,cyl(0.62,0.68,0.12,28),0,0.06,0);
-    const dome=new T.SphereGeometry(0.66,32,14,0,TAU,0,Math.PI/2); A(turret,M.paint,dome,0,0.12,0,0,0,0,1.22,0.6,1);
-    const visor=new T.TorusGeometry(0.62,0.035,8,24,Math.PI*0.7); A(turret,M.glow,visor,0,0.28,0,Math.PI/2,0,-Math.PI*0.35,1.2,1,1);
+    A(turret,M.paint,sideProfile([[-0.84,0],[0.46,0],[0.88,0.1],[0.52,0.3],[-0.62,0.33],[-0.88,0.15]],1.12,0.04),0,0.1,0);
+    for(const s of [-1,1]){ A(turret,M.glow,box(0.5,0.03,0.02),0.12,0.33,s*0.565); A(turret,M.paint2,box(0.62,0.12,0.06),-0.2,0.22,s*0.58); }
     A(turret,M.paint2,box(0.5,0.18,0.04),-0.62,0.4,0,0,0,0.5);
     A(turret,M.steel,cyl(0.012,0.016,0.9,6),-0.5,0.82,-0.32); A(turret,M.glow,new T.SphereGeometry(0.04,8,6),-0.5,1.28,-0.32);
     emblem(turret,-0.15,0.26,0.6,0.38,false); emblem(turret,-0.15,0.26,-0.6,0.38,true);
   } else {
     // Vanguard: classic main battle tank — stowage, smoke launchers, cupola, bustle rack
     for(const s of [-1,1]){
-      A(body,M.paint2,extrudeBox(2.75,0.2,0.08,0.03,0.03),0.06,0.68,s*0.79);
-      A(body,M.glow,box(2.3,0.045,0.02),0.06,0.62,s*0.835);
+      for(let k=0;k<3;k++) A(body,M.paint2,extrudeBox(0.9,0.3,0.08,0.03,0.03),-0.9+k*0.93,0.73,s*0.79);
+      A(body,M.glow,box(2.5,0.035,0.02),0.06,0.56,s*0.835);
       A(body,M.paint2,extrudeBox(0.5,0.18,0.22,0.03,0.03),-0.85,th+0.18,s*S.tz);
       A(body,M.paint2,extrudeBox(0.36,0.16,0.2,0.03,0.03),0.55,th+0.17,s*S.tz);
       const jg=cyl(0.13,0.09,0.46,14); A(body,M.gun,jg,-1.12,1.12,s*0.42,0,0,0.5);
       A(body,M.glow,new T.TorusGeometry(0.1,0.025,6,16),-1.22,0.93,s*0.42,Math.PI/2,0,0.5);
     }
     A(turret,M.gun,cyl(0.66,0.72,0.14,28),0,0.07,0);
-    const dome=new T.SphereGeometry(0.66,32,16,0,TAU,0,Math.PI/2); A(turret,M.paint,dome,0,0.12,0,0,0,0,1.22,0.66,1);
-    A(turret,M.paint2,extrudeBox(0.3,0.34,0.64,0.04,0.04),0.66,0.28,0);
-    A(turret,M.glow,box(0.05,0.07,0.52),0.74,0.26,0);
+    A(turret,M.paint,sideProfile([[-0.88,0],[0.5,0],[0.9,0.13],[0.72,0.44],[-0.7,0.48],[-0.94,0.26]],1.18,0.05),0,0.1,0);
+    for(const s of [-1,1]){ A(turret,M.paint2,sideProfile([[-0.24,0],[0.48,0],[0.8,0.12],[0.62,0.36],[-0.24,0.38]],0.1,0.02),0,0.14,s*0.63);
+      A(turret,M.glow,box(0.56,0.03,0.02),0.22,0.47,s*0.684); A(turret,M.glow,box(0.02,0.16,0.02),-0.08,0.36,s*0.684); }
+    A(turret,M.glow,box(0.05,0.07,0.52),0.8,0.28,0);
     A(turret,M.paint2,cyl(0.17,0.19,0.12,16),-0.22,0.55,0.16); A(turret,M.paint,cyl(0.18,0.18,0.04,16),-0.22,0.63,0.16);
     for(let k=0;k<3;k++){ const a=k/3*TAU+0.4; A(turret,M.dark,box(0.06,0.05,0.04),-0.22+Math.cos(a)*0.17,0.58,0.16+Math.sin(a)*0.17,0,-a,0); }
     for(const s of [-1,1]) for(let k=0;k<3;k++) A(turret,M.gun,cyl(0.035,0.035,0.16,8),0.3+k*0.07,0.3,s*0.7,0,0,-0.9);
@@ -1091,6 +1144,9 @@ function buildTankMesh(st,sh,styleKey){
     const tipX=0.3+sh.bL+0.1;
     if(styleKey==='mortar'){
       for(const f of [0.25,0.5,0.75]){ const r=new T.TorusGeometry(sh.bR*1.12,0.03,8,20); A(recoil,M.steel,r,0.3+sh.bL*f,0,bz,0,Math.PI/2,0); }
+      for(const s of [-1,1]){ A(recoil,M.dark,box(0.86,0.06,0.06),0.62,0.16,s*0.2,0,0,-0.2); A(recoil,M.dark,box(0.86,0.06,0.06),0.62,-0.16,s*0.2,0,0,0.2); }
+      A(recoil,M.dark,box(0.06,0.4,0.42),0.98,0,0);
+      const bore=new T.CircleGeometry(sh.bR*0.75,18); A(recoil,M.dark,bore,0.3+sh.bL+0.25,0,bz,0,Math.PI/2,0);
       const fl=cyl(sh.brR*1.15,sh.brR*0.9,0.28,18); fl.rotateZ(-Math.PI/2); A(recoil,M.steel,fl,tipX,0,bz);
     } else if(styleKey==='heavy'){
       A(recoil,M.steel,box(0.32,sh.brR*1.7,sh.brR*1.9),tipX,0,bz);
@@ -1110,7 +1166,16 @@ function buildTankMesh(st,sh,styleKey){
   M.all=Object.values(M).filter(v=>v&&v.isMaterial); M.all.forEach(m=>{ m.userData.tr0=m.transparent; m.userData.dw0=m.depthWrite; });
   return {root,body,turret,pivot,recoil,wheels,M};
 }
-  return {buildTankMesh,SHAPES,col};
+const STAGE_VS='varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }';
+const STAGE_FS=`uniform vec3 uC; uniform float uT; varying vec3 vP;
+void main(){ float a=atan(vP.y,vP.x); float b=0.25+0.9*pow(0.5+0.5*sin(a*2.0-uT*2.6),10.0)+0.3*pow(0.5+0.5*sin(a*14.0+uT*1.2),14.0); gl_FragColor=vec4(uC*b,1.0);
+#include <tonemapping_fragment>
+#include <encodings_fragment>
+}`;
+function stageRing(color,r){ const m=new T.ShaderMaterial({uniforms:{uC:{value:col(color,3.8)},uT:{value:0}},vertexShader:STAGE_VS,fragmentShader:STAGE_FS}), g=new T.Mesh(new T.TorusGeometry(r,0.035,8,140),m); g.rotation.x=Math.PI/2; return g; }
+function stageBeam(color){ const c=document.createElement('canvas'); c.width=4; c.height=128; const x=c.getContext('2d'), gr=x.createLinearGradient(0,0,0,128); gr.addColorStop(0,'rgba(255,255,255,0)'); gr.addColorStop(0.55,'rgba(255,255,255,.35)'); gr.addColorStop(1,'rgba(255,255,255,1)'); x.fillStyle=gr; x.fillRect(0,0,4,128);
+  const m=new T.Mesh(new T.CylinderGeometry(0.55,2.45,6.5,48,1,true),new T.MeshBasicMaterial({map:new T.CanvasTexture(c),color:col(color).lerp(new T.Color(1,1,1),0.55),transparent:true,opacity:.16,blending:T.AdditiveBlending,depthWrite:false,side:T.DoubleSide})); m.position.y=3.2; return m; }
+  return {buildTankMesh,SHAPES,col,stageRing,stageBeam};
 }
 
 // ---------- lobby ----------
@@ -1124,12 +1189,13 @@ function srInit(){
     const r=new T.WebGLRenderer({canvas:$('tankCv'),antialias:true,alpha:true,powerPreference:'low-power'}); r.setClearColor(0x000000,0); r.outputEncoding=T.sRGBEncoding; r.toneMapping=T.ACESFilmicToneMapping; r.toneMappingExposure=1.25; r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
     const sc=new T.Scene(), cam=new T.PerspectiveCamera(26,1,0.5,60);
     sc.add(new T.HemisphereLight(col('#c8d2ff'),col('#05060a'),0.25));
-    const key=new T.SpotLight(col('#fff3e2'),7,40,0.42,0.55,1); key.position.set(-3.4,9.5,6); key.target.position.set(0,0.6,0); sc.add(key); sc.add(key.target);
+    const key=new T.SpotLight(col('#fff3e2'),8.4,40,0.34,0.6,1); key.position.set(-3.2,10,5.4); key.target.position.set(0,0.6,0); sc.add(key); sc.add(key.target);
     const fill=new T.DirectionalLight(col('#7f95ff'),0.35); fill.position.set(6,1.5,6); sc.add(fill);
     SR.rim=new T.DirectionalLight(col('#ffffff'),4.2); SR.rim.position.set(4,3.5,-7); sc.add(SR.rim);
     const rim2=new T.DirectionalLight(col('#a9c8ff'),2.6); rim2.position.set(-6,4,-6); sc.add(rim2);
     const disc=new T.Mesh(new T.CylinderGeometry(2.3,2.36,0.08,64),new T.MeshLambertMaterial({color:col('#0e1016')})); disc.position.y=-0.04; sc.add(disc); SR.disc=disc;
-    SR.ringM=new T.MeshStandardMaterial({color:col('#050505'),emissive:col('#ffffff'),emissiveIntensity:3.4}); const ring=new T.Mesh(new T.TorusGeometry(2.34,0.02,6,100),SR.ringM); ring.rotation.x=Math.PI/2; sc.add(ring); SR.ring=ring;
+    SR.ringM=new T.MeshStandardMaterial({color:col('#050505'),emissive:col('#ffffff'),emissiveIntensity:1.6}); const ring=new T.Mesh(new T.TorusGeometry(1.7,0.012,6,100),SR.ringM); ring.rotation.x=Math.PI/2; sc.add(ring); SR.ring=ring;
+    SR.chase=SR.kit.stageRing('#ffffff',2.42); SR.chase.position.y=-0.02; sc.add(SR.chase); SR.beam=SR.kit.stageBeam('#ffffff'); sc.add(SR.beam);
     SR.r=r; SR.sc=sc; SR.cam=cam; SR.ok=true;
   }catch(e){ SR.ok=false; try{ console.warn(e); }catch(_){} }
   return SR.ok;
@@ -1142,7 +1208,7 @@ function srSync(){
   if(key===SR.key) return;
   const same=SR.idx===S.tank, g=srMake(S.tank);
   if(SR.cur){ if(same) srDrop(SR.cur); else { if(SR.old) srDrop(SR.old); SR.old=SR.cur; SR.anim=0; if(!SR.dirSet){ const n=S.tanks.length, d=(S.tank-SR.idx+n)%n; SR.dir=d<=n/2?1:-1; } } }
-  SR.dirSet=false; SR.cur=g; SR.idx=S.tank; SR.key=key; SR.ringM.emissive.copy(SR.kit.col(st.color)); SR.rim.color.copy(SR.kit.col(st.color));
+  SR.dirSet=false; SR.cur=g; SR.idx=S.tank; SR.key=key; SR.ringM.emissive.copy(SR.kit.col(st.color)); SR.rim.color.copy(SR.kit.col(st.color)); SR.chase.material.uniforms.uC.value.copy(SR.kit.col(st.color,3.8)); SR.beam.material.color.copy(SR.kit.col(st.color)).lerp(new window.THREE.Color(1,1,1),0.55);
 }
 function srVisible(){ return current==='vLobby'&&document.visibilityState!=='hidden'; }
 function srWake(){ if(!SR.raf&&srVisible()&&srInit()) SR.raf=requestAnimationFrame(srFrame); }
@@ -1151,6 +1217,7 @@ function srFrame(ts){
   const dt=Math.min(0.1,SR.last?Math.max(0,ts-SR.last)/1000:0.016); SR.last=ts; thumbsMake(); srSync();
   const cv=$('tankCv'), w=cv.clientWidth, h=cv.clientHeight; if(w<10||h<10) return;
   if(w!==SR.w||h!==SR.h){ SR.w=w; SR.h=h; SR.r.setSize(w,h,false); const a=w/h, tv=Math.tan(13*Math.PI/180), d=Math.max(2.85/(tv*a),1.85/tv); SR.cam.aspect=a; SR.cam.position.set(0,0.95+d*0.26,d); SR.cam.lookAt(0,0.72,0); SR.cam.updateProjectionMatrix(); }
+  if(SR.chase) SR.chase.material.uniforms.uT.value=ts/1000;
   SR.spin+=dt*0.55; SR.anim=Math.min(1,SR.anim+dt/0.55); const e=1-Math.pow(1-SR.anim,3), D=7;
   if(SR.cur){ SR.cur.position.x=SR.dir*(1-e)*D+SR.drag*4; SR.cur.rotation.y=SR.spin+(1-e)*2.6*SR.dir; }
   if(SR.old){ SR.old.position.x=-SR.dir*e*D+SR.drag*4; SR.old.rotation.y=SR.spin-e*1.2*SR.dir; if(SR.anim>=1){ srDrop(SR.old); SR.old=null; } }
@@ -1164,7 +1231,7 @@ function thumbsMake(){
   if(TH.key!==key){ TH.key=key; TH.q=S.tanks.map((_,i)=>i); }
   if(!TH.q.length) return; const i=TH.q.shift();
   try{ const T=window.THREE, r=SR.r, cv=r.domElement, W=180, H=120, cam=TH.cam||(TH.cam=new T.PerspectiveCamera(24,W/H,0.5,60)); cam.position.set(5.0,2.5,6.3); cam.lookAt(0,0.62,0);
-    const vis=[SR.cur,SR.old,SR.disc,SR.ring].filter(Boolean).map(o=>[o,o.visible]); vis.forEach(([o])=>{ o.visible=false; });
+    const vis=[SR.cur,SR.old,SR.disc,SR.ring,SR.chase,SR.beam].filter(Boolean).map(o=>[o,o.visible]); vis.forEach(([o])=>{ o.visible=false; });
     r.setSize(W,H,false); const c2=TH.cv||(TH.cv=document.createElement('canvas')); c2.width=W*2; c2.height=H*2; const x=c2.getContext('2d');
     const g=srMake(i); g.rotation.y=-0.42; r.render(SR.sc,cam); x.clearRect(0,0,c2.width,c2.height); x.drawImage(cv,0,0,c2.width,c2.height); TH.img[i]=c2.toDataURL('image/png'); srDrop(g);
     vis.forEach(([o,v])=>{ o.visible=v; }); SR.w=0; SR.h=0;
@@ -1374,7 +1441,7 @@ const H={ml:3,livesN:null,score:$('scorec'),clock:$('clockc'),team:$('teamc'),li
 function setTxt(el,v){ if(el._v!==v){ el._v=v; el.textContent=v; } }
 function setW(el,v){ if(el._w!==v){ el._w=v; el.style.width=v; } }
 function setCls(el,c,on){ on=!!on; const key='_c'+c; if(el[key]!==on){ el[key]=on; el.classList.toggle(c,on); } }
-// air strike button / launch mode follow what the big screen says (0 none, 1 ready, 2 aiming)
+// air strike button / launch mode follow what the game screen says (0 none, 1 ready, 2 aiming)
 function syncStrike(){ const a=S.as|0; strikeBtn.hidden=a!==1; launchBtn.hidden=a!==2; $('strikeTip').hidden=a!==2; setCls(pad,'striking',a===2); if(a===2&&R) endR(false); if(a===2&&Bm) endB(false); }
 function renderHud(){
   const h=S.hud; let o='';
@@ -1398,7 +1465,7 @@ function renderHud(){
     if(typeof h.wp==='number'&&h.wp>=0&&h.wp<WPN.length&&!wpnTouch){ if(S.wAck!==h.wp){ S.wAck=h.wp; S.w=h.wp; } setTxt($('wpnName'),WPN[S.w]); }
     if(typeof h.as==='number'&&!launchTouch&&!strikeTouch){ const a=alive?h.as|0:0; if(S.as!==a){ S.as=a; syncStrike(); } }
     const pu=typeof h.pu==='string'?h.pu:((+h.star||0)>0?'★ 2× FIRE '+Math.ceil(+h.star):''); if(H.star.hidden===!!pu) H.star.hidden=!pu; if(pu) setTxt(H.star,pu);
-    if(S.phase!=='paused'){ if(h.st==='dead') o='DOWN · BACK IN '+Math.max(0,+h.resp||0).toFixed(1)+'S'; else if(h.st==='out') o="YOU'RE OUT · WATCH THE BIG SCREEN"; }
+    if(S.phase!=='paused'){ if(h.st==='dead') o='DOWN · BACK IN '+Math.max(0,+h.resp||0).toFixed(1)+'S'; else if(h.st==='out') o="YOU'RE OUT · WATCH THE GAME SCREEN"; }
   }
   if(!o&&S.flashMsg&&now()<S.flashUntil) o=S.flashMsg;
   setTxt(H.ov,o); if(H.ov.hidden===!!o) H.ov.hidden=!o;
@@ -1406,10 +1473,12 @@ function renderHud(){
 
 // ---------- start ----------
 const pre=(new URLSearchParams(location.search).get('room')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
-const last=(store.get('salvo-last-room')||'').replace(/[^A-Z]/g,'').slice(0,4);
-let sess=''; try{ sess=(sessionStorage.getItem('salvo-auto')||'').slice(0,4); }catch(e){}
+$('playHere').addEventListener('click',()=>{ const c=($('codeIn').value||'').toUpperCase().replace(/[^A-Z]/g,''); if(c.length!==4) return; saveName($('nameIn').value); location.href='index.html?join='+c+'&touch=1'; });
+$('hostHere').addEventListener('click',()=>{ saveName($('nameIn').value); location.href='index.html?host=1&touch=1'; });
+const last=(store.get('salvo-ol-last-room')||'').replace(/[^A-Z]/g,'').slice(0,4);
+let sess=''; try{ sess=(sessionStorage.getItem('salvo-ol-auto')||'').slice(0,4); }catch(e){}
 // strip ?room= from the address: a home-screen shortcut saved from here then opens the join screen instead of an old game
-if(pre){ try{ sessionStorage.setItem('salvo-auto',pre); }catch(e){} try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} }
+if(pre){ try{ sessionStorage.setItem('salvo-ol-auto',pre); }catch(e){} try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} }
 const auto=pre.length===4?pre:sess.length===4?sess:'';
 codeIn.value=auto||last; syncJoinBtn();
 if(auto){ S.code=auto; S.altCode=last.length===4&&last!==auto?last:''; connect(); } else show('vJoin');
