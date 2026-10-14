@@ -21,7 +21,7 @@ No game server is needed. GitHub Pages hosts the files, and the screens and phon
 1. Open the repository on GitHub: `github.com/sauv2616-hub/salvo-brawl`.
 2. Click the **Settings** tab, then **Pages** in the left sidebar.
 3. Under **Build and deployment**, set **Source** to **Deploy from a branch**. Pick the **main** branch and the **/ (root)** folder, then click **Save**.
-4. Wait a minute or two and refresh the page. It shows the address: **https://sauv2616-hub.github.io/salvo-brawl/**
+4. Wait a minute or two and refresh the page. It shows the address: **https://playsalvo.online** (the older `sauv2616-hub.github.io/salvo-brawl/` address forwards there)
 
 Everyone uses that same address. The old Salvo Online address (`…/salvo-brawl-online/`) now sends people here, so old links and invites keep working.
 
