@@ -229,6 +229,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 
 /* pad */
 #vPad{padding:0;background:radial-gradient(ellipse at 50% 120%,rgba(255,255,255,.05),transparent 60%),var(--night);overflow:hidden;}
+@supports (background:color-mix(in srgb,red 10%,transparent)){ #vPad{background:radial-gradient(ellipse 80% 60% at 50% 115%,color-mix(in srgb,var(--pc) 20%,transparent),transparent 70%),radial-gradient(ellipse 50% 40% at 50% -10%,color-mix(in srgb,var(--pc) 8%,transparent),transparent 70%),var(--night);} }
 .half{position:absolute;top:0;bottom:0;width:50%;pointer-events:none;}
 .half.l{left:0;border-right:1px solid var(--edge);}
 .half.r{right:0;}
@@ -247,6 +248,8 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .aimline{position:absolute;left:0;top:-3px;height:6px;width:0;background:linear-gradient(90deg,rgba(255,255,255,.2),var(--pc));transform-origin:0 50%;border-radius:3px;will-change:transform,width;}
 .aimline i{position:absolute;right:-10px;top:-7px;width:0;height:0;border-left:16px solid var(--pc);border-top:10px solid transparent;border-bottom:10px solid transparent;}
 .aimtxt.up{transform:translate(-50%,calc(-100% - 22px));}
+.aim{z-index:7;}
+.aimtxt{padding:3px 12px 1px;background:rgba(6,8,15,.72);border-radius:3px;}
 .aimtxt{position:absolute;left:0;top:0;transform:translate(-50%,22px);white-space:nowrap;font-family:var(--display);font-size:30px;font-weight:600;letter-spacing:.04em;color:var(--ink);text-shadow:0 2px 0 rgba(0,0,0,.6);}
 .bombbtn{position:absolute;right:calc(env(safe-area-inset-right,0px) + 38px);bottom:calc(env(safe-area-inset-bottom,0px) + 42px);width:104px;height:104px;border-radius:50%;border:2px solid var(--pc);background:rgba(16,20,36,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0;z-index:2;pointer-events:none;}
 .bombbtn b{font-family:var(--display);font-weight:600;font-size:28px;line-height:.8;padding-top:.1em;letter-spacing:.06em;}
@@ -415,7 +418,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
 .ri.far{opacity:0;}
 .ri b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--display);font-weight:600;font-size:clamp(12px,3.6vw,16px);letter-spacing:.06em;line-height:1;padding-top:.06em;}
 .ri.cur b{color:var(--ink);}
-.reel[data-reel="1"] .ri b,.reel[data-reel="2"] .ri b{white-space:normal;text-align:center;line-height:.92;}
+.reel[data-reel="1"] .ri b,.reel[data-reel="2"] .ri b{white-space:normal;text-align:center;line-height:.92;font-size:clamp(11px,3vw,14px);}
 .ri-img{display:flex;align-items:center;justify-content:center;height:calc(var(--ih)*0.6);}
 .ri-img img{display:block;max-height:100%;max-width:100%;}
 .ri-fb{font-style:normal;font-family:var(--display);font-weight:700;font-size:calc(var(--ih)*0.4);color:var(--pc);}
@@ -466,7 +469,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
       <button class="primary alt" id="playHere" type="button" disabled><b>PLAY ON THIS PHONE</b><small>ONLINE · SCREEN AND CONTROLS</small></button>
     </div>
   </form>
-  <div class="joinmore"><button class="ghost" id="hostHere" type="button">HOST A GAME</button><button class="ghost fsbtn" type="button">FULL SCREEN</button></div>
+  <div class="joinmore"><button class="ghost" id="soloHere" type="button">PLAY VS CPU</button><button class="ghost" id="hostHere" type="button">HOST A GAME</button><button class="ghost fsbtn" type="button">FULL SCREEN</button></div>
 </section>
 
 <section class="view" id="vMsg" hidden>
@@ -1493,6 +1496,7 @@ function renderHud(){
 const pre=(new URLSearchParams(location.search).get('room')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
 $('playHere').addEventListener('click',()=>{ const c=($('codeIn').value||'').toUpperCase().replace(/[^A-Z]/g,''); if(c.length!==4) return; saveName($('nameIn').value); location.href='index.html?join='+c+'&touch=1'; });
 $('hostHere').addEventListener('click',()=>{ saveName($('nameIn').value); location.href='index.html?host=1&touch=1'; });
+$('soloHere').addEventListener('click',()=>{ saveName($('nameIn').value); location.href='index.html?quick=1&touch=1'; });
 const last=(store.get('salvo-ol-last-room')||'').replace(/[^A-Z]/g,'').slice(0,4);
 let sess=''; try{ sess=(sessionStorage.getItem('salvo-ol-auto')||'').slice(0,4); }catch(e){}
 // strip ?room= from the address: a home-screen shortcut saved from here then opens the join screen instead of an old game

@@ -27,9 +27,15 @@ Everyone uses that same address. The old Salvo Online address (`…/salvo-brawl-
 
 ## Playing
 
+The title screen has three ways in: **QUICK PLAY**, **WITH FRIENDS** and **JOIN ONLINE**. **HOW TO PLAY** (next to your name) shows the goal and the controls for keyboards, phones and game controllers.
+
+**Quick Play (on your own)**
+
+Click **PLAY** under **QUICK PLAY** and you're straight into a match against 3 CPUs, on the keyboard (or the mouse to aim) or, on a phone, with the touch controls. The first time, the how-to-play card comes up first; **LET'S GO** starts the match. The room is still open, so friends can join for the next match. On a phone, the phone app's **PLAY VS CPU** button does the same.
+
 **In the room, on one big screen**
 
-1. Open the address on the computer (or TV) and click **PLAY HERE**. Type your name first if you're playing on that computer too. The lobby shows a big room code and a QR code.
+1. Open the address on the computer (or TV) and click **PLAY HERE** (under **WITH FRIENDS**). Type your name first if you're playing on that computer too. The lobby shows a big room code and a QR code.
 2. Each player scans the QR code with their phone and taps **CONTROLLER**. Keyboard players press **G** or **K**, game controllers press **A**.
 3. Pick the arena and match settings, add CPUs if you like, and start with **Start match** (or Enter). It also starts by itself when everyone is ready.
 
@@ -105,7 +111,7 @@ Click **+ Add CPU** in the CPUs panel on the right to add a computer-controlled 
 - **Mode · Lives / Timed / Keep Away:** a set number of lives each, last one standing wins; or a timed match. The **− / +** buttons set the lives (1 to 9) or the minutes (1 to 10). In a timed match you respawn every time, score **+1 for every tank you knock out and −1 each time you go down** (including falling off), and the highest score when time runs out wins. If it's tied, the tied players go into **sudden death**: low health, and the next knockout wins.
 - **Mode · Keep Away:** grab the power core and keep it away from everyone else for as long as you can. The core (a white-hot crystal in a spinning cage, glowing through every colour) drops in at the top of the arena; drive into it to grab it, and your clock (on your card) runs for as long as you carry it. Everyone else is out to knock you down and take it. Getting knocked out drops it: it pops out and rolls around until someone else picks it up. If it falls off the map (or into lava or a rising hazard), it comes back at the top. Every attack does **2.5× damage** in this mode but knocks tanks back about 30% less, so tanks go down (and the core changes hands) a lot more often than they fly off. If it touches a bounce net it also comes back at the top. You respawn every time. There's no match clock: the **− / +** buttons set how long you need to hold it (15 seconds to 5 minutes, 1:00 to start with), and the first player (or team, adding up its players' times) to hold it that long wins. The clock at the top shows the leader's time and the goal. CPUs go after the core and its carrier too.
 - **Teams · Free-for-all / Teams:** with Teams on, each player is on the red, blue, green or gold team, and everyone on a team drives that colour. Teams can be any size (1 against 3 is fine). New players join the smaller of red and blue; click the team badge on a player's card to move them, or players can tap **TEAM · SWITCH** on their phone. **Auto** splits everyone evenly between red and blue. Teammates can't hurt each other, and in every mode each team starts together on its own side of the map (red on the left, blue on the right, then green and gold in between when there are more teams). In timed and Keep Away games your team also respawns on its own side of the centre. When two or more real players (not CPUs) are on the same team, each one gets a coloured dot and their tag in their own player colour (on their card, above their tank and on the phone), so teammates can tell each other apart while their tanks stay the team colour.
-- **Power-ups:** click it to open a small panel: how often power-ups fall (Off, Low, Normal, High or Chaos) and which kinds can drop (at least one stays on). See *Power-ups*.
+- **Power-ups:** click it to open a small panel: how often power-ups fall (Off, Low, Normal, High or Chaos) and which kinds can drop (at least one stays on). They start on Normal. See *Power-ups*.
 - **Sound:** the gear icon at the top right has the music and effects volume. They're also on the pause screen, and M mutes everything.
 - **Name tags:** the gear also sets the tags over the tanks, so you can find yours without them getting in the way. **Size** goes from Small to Huge. **Style:** *Minimal* shows just the P number and a small marker, *Standard* shows the name with a health and jet bar, and *Bold* puts each name on a plate in its colour, with bigger bars and a brighter glow on the ground under the tank. The same choices are on the pause screen (and in a guest's Esc menu), so you can try them mid-match and see the difference straight away. They're saved on that computer.
 - **Camera:** in the same settings (and on the pause screen, so you can change it mid-match): **Show** the *whole battle* or follow *my tank*, and **Zoom** *close*, *normal* or *far*. The zoom works for both. **V** also switches between the whole battle and your tank. Saved on that computer or phone.
@@ -203,7 +209,7 @@ Game controllers join with A. Left stick drives (A or LB for jetpack), right sti
 
 ### After the match
 
-The results screen shows who won, a scoreboard for every player (lives left, knockouts, falls, damage, direct hits, bomb hits and missile hit rate) and up to four awards: **Most damage**, **Most KOs**, **Sharpshooter** (best hit rate, with at least 5 shots), **Bomb expert** and, with power-ups on, **Collector**. **Rematch** plays the same setup again; **Back to lobby** lets everyone change tanks and settings.
+The winner gets fireworks in their colour, and the results screen shows who won, a scoreboard for every player (lives left, knockouts, falls, damage, direct hits, bomb hits and missile hit rate) and up to four awards: **Most damage**, **Most KOs**, **Sharpshooter** (best hit rate, with at least 5 shots), **Bomb expert** and, with power-ups on, **Collector**. **Rematch** plays the same setup again; **Back to lobby** lets everyone change tanks and settings.
 
 ### Music and sound
 
@@ -326,7 +332,7 @@ They all use the same missiles, bombs and jetpack, and differ in these stats (th
 | Striker | Scout | 25% faster, 25% more jet fuel, slightly quicker reload | 10% less health, easier to knock back |
 | Bulwark | Heavy | 28% more health, 28% harder to knock back, 5% more damage | 20% slower, reloads 15% slower, 15% less jet fuel |
 | Ravager | Demolition | 15% bigger blasts, 10% more damage, 12% more knockback | Reloads 10% slower, a little slower to drive |
-| Viper | Rapid fire | Reloads 26% faster, faster missiles | 20% less damage, 10% less health, smaller blasts |
+| Viper | Rapid fire | Reloads 22% faster, faster missiles | 20% less damage, 10% less health, smaller blasts |
 
 **Weight** matters in the arenas with a twist. From lightest to heaviest: Striker, Viper, Vanguard, Ravager, Bulwark. On ice a heavier tank slides further (for its speed) and is slower to turn round; in low gravity a lighter tank floats longer; underwater a lighter tank sinks more slowly and gets pushed around more by the current. A tank shrunk by the **Tiny** power-up counts as much lighter for all of these.
 

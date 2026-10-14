@@ -195,7 +195,7 @@ button{font:inherit;color:inherit;}
 @keyframes bannerlife{0%,82%{opacity:1}100%{opacity:0}}
 #banner .bm{max-width:100%;padding:0 .14em;box-sizing:border-box;overflow-wrap:break-word;}
 #banner.long .bm{font-size:clamp(44px,7vw,112px);}
-#banner.down,#banner.star{top:calc(env(safe-area-inset-top,0px) + 84px);}
+#banner.down,#banner.star{top:calc(env(safe-area-inset-top,0px) + 104px);}
 #banner.down .bm,#banner.star .bm{font-size:clamp(28px,3.4vw,52px);text-shadow:0 4px 0 rgba(0,0,0,.42),0 0 26px rgba(0,0,0,.45);}
 #banner.down .bs,#banner.star .bs{margin-top:6px;font-size:clamp(9px,.95vw,12px);letter-spacing:.24em;padding:4px 10px 3px 13px;}
 #banner.down.show .bm,#banner.star.show .bm{animation:slamS .32s cubic-bezier(.15,1.45,.35,1) both;}
@@ -708,6 +708,50 @@ span.s-team{cursor:default;}
 @media (prefers-reduced-motion:reduce){ .turnphone .tp-ph{animation:none;transform:rotate(-90deg);} }
 @media (orientation:portrait) and (max-width:820px){ html.phone:not(.upright) .turnphone{display:flex;} }
 #tpRotate{display:none!important;}
+/* ---------- title screen ---------- */
+.otag{margin:-6px 0 0;font-family:var(--display);font-weight:500;font-size:clamp(22px,2.4vw,32px);letter-spacing:.06em;color:var(--ink);opacity:.9;}
+.oname .ohow{margin-left:auto;}
+.ochoices.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.ochoices.three .ochoice h2{font-size:38px;}
+.ochoices.three .ochoice p{flex:1;}
+.ochoices.three #oCode{font-size:38px;width:4.4em;}
+.quick-card{border-top-color:#7dff8a!important;background:linear-gradient(180deg,rgba(125,255,138,.10),rgba(8,11,22,.88) 60%)!important;}
+.quick-card .btn.primary{background:#7dff8a;color:#06200b;min-width:60%;}
+.quick-card .btn.primary:hover{background:#a8ffb2;}
+@media (max-width:900px){ .ochoices.three{grid-template-columns:1fr 1fr;} .ochoices.three .quick-card{grid-column:1/-1;} }
+@media (max-width:560px){ .ochoices.three{grid-template-columns:1fr;} }
+@media (max-height:520px){ .online-wrap{gap:10px;} .online-wrap .kicker,.otag,.ochoices.three .ochoice p{display:none;} .online-wrap .logo .l1{font-size:58px;}
+  .oname{padding:8px 12px;} #oName{font-size:24px;} .ochoices.three{grid-template-columns:repeat(3,minmax(0,1fr));} .ochoices.three .quick-card{grid-column:auto;}
+  .ochoices.three .ochoice{padding:12px 14px;gap:8px;} .ochoices.three .ochoice h2{font-size:26px;} .ochoices.three #oCode{font-size:28px;width:4.2em;} .ochoices.three .btn.primary{font-size:22px;padding:10px 18px 8px;} }
+/* ---------- how to play ---------- */
+.howto{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;background:rgba(6,8,15,.84);overflow-y:auto;}
+.howto[hidden]{display:none;}
+.ht-box{width:min(980px,100%);display:flex;flex-direction:column;gap:12px;padding:22px 26px;background:#0b0f1c;box-shadow:0 30px 80px rgba(0,0,0,.6);border-top:3px solid var(--alert);box-sizing:border-box;}
+.ht-goal{margin:0;font-family:var(--display);font-weight:600;font-size:clamp(30px,4vw,50px);line-height:.9;letter-spacing:.03em;padding-top:.06em;}
+.ht-sub{margin:0;font-size:14px;line-height:1.5;color:var(--ink-dim);}
+.ht-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:4px;}
+.ht-col{padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--edge);}
+.ht-col h3{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.26em;color:var(--alert);}
+.ht-col dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;align-items:center;}
+.ht-col dt{font-size:11px;font-weight:700;letter-spacing:.12em;white-space:nowrap;}
+.ht-col dd{margin:0;font-size:13px;color:var(--ink-dim);}
+.ht-mouse{margin:8px 0 0;font-size:12px;line-height:1.45;color:var(--ink-dim);}
+.ht-mouse:empty{display:none;}
+.ht-tip{margin:2px 0 0;font-size:13px;color:var(--ink);}
+.ht-tip b{color:var(--alert);}
+#htGo{align-self:flex-start;}
+html.phone .ht-kb,html.phone .ht-pad,#app.touch .ht-kb,#app.touch .ht-pad{display:none;}
+html.phone .ht-cols,#app.touch .ht-cols{grid-template-columns:1fr;}
+@media (max-width:760px){ .ht-cols{grid-template-columns:1fr;} }
+@media (max-height:520px){ .ht-box{padding:14px 18px;gap:8px;} .ht-goal{font-size:28px;} .ht-sub{font-size:12px;} }
+/* phone on its side: the whole scoreboard (up to 8 players) fits beside the winner */
+@media (max-height:520px) and (orientation:landscape){
+  .stats th,.stats td{padding:3px 6px;} .stats th:first-child,.stats td:first-child{white-space:normal;max-width:80px;line-height:1.15;font-size:8px;}
+  .stats td span{font-size:11.5px!important;} .stats td{font-size:15px;} .stats thead th{font-size:15px;}
+}
+/* touch screens have no Enter key: hide the key hints on buttons */
+#app.touch .btn .kc{display:none;}
+#app.touch #pause [data-keys]{display:none;}
 </style>
 </head>
 <body>
@@ -838,6 +882,7 @@ span.s-team{cursor:default;}
       <div class="row tagrow"><span class="tr-l">NAME TAGS</span><div class="seg" role="group" aria-label="Name tag size"><button type="button" data-tsz="s">S</button><button type="button" data-tsz="m">M</button><button type="button" data-tsz="l">L</button><button type="button" data-tsz="xl">XL</button></div><div class="seg" role="group" aria-label="Name tag style"><button type="button" data-tst="min">MINIMAL</button><button type="button" data-tst="std">STANDARD</button><button type="button" data-tst="bold">BOLD</button></div></div>
       <div class="row">
         <button class="btn primary" id="resumeBtn">RESUME</button>
+        <button class="btn" type="button" id="pHowBtn">HOW TO PLAY</button>
         <button class="btn" type="button" data-keys="1">KEYS</button>
         <button class="btn" id="lobbyBtn">BACK TO LOBBY</button>
       </div>
@@ -879,19 +924,24 @@ span.s-team{cursor:default;}
 
   <div class="screen" id="online" hidden>
     <div class="online-wrap">
-      <div class="kicker">2–8 PLAYERS · IN THE ROOM, ONLINE, OR BOTH</div>
+      <div class="kicker">TANK BRAWLER · 2–8 PLAYERS · IN THE ROOM, ONLINE, OR BOTH</div>
       <h1 class="logo"><span class="l1">Salvo</span></h1>
-      <div class="oname"><label for="oName">YOUR NAME</label><input id="oName" type="text" maxlength="12" placeholder="PLAYER" autocomplete="nickname" spellcheck="false" autocapitalize="characters"></div>
-      <div class="ochoices">
+      <p class="otag">Blast your friends off the map.</p>
+      <div class="oname"><label for="oName">YOUR NAME</label><input id="oName" type="text" maxlength="12" placeholder="PLAYER" autocomplete="nickname" spellcheck="false" autocapitalize="characters"><button class="btn ohow" id="oHow" type="button">HOW TO PLAY</button></div>
+      <div class="ochoices three">
+        <div class="ochoice quick-card">
+          <h2>QUICK PLAY</h2>
+          <p>You against 3 CPUs, right now.</p>
+          <button class="btn primary" id="oQuick" type="button">PLAY</button>
+        </div>
         <div class="ochoice host-card">
-          <h2>PLAY HERE</h2>
-          <p>This screen runs the match. Phones in the room become controllers; keyboards and game controllers join here too. Friends elsewhere join online with the room code.</p>
-          <p class="phone-note">On a phone, the match runs right here with touch controls.</p>
+          <h2>WITH FRIENDS</h2>
+          <p>Friends in the room scan the code with their phones. Keyboards and controllers work too.</p>
           <button class="btn primary" id="oHost" type="button">PLAY HERE</button>
         </div>
         <form class="ochoice" id="oJoinForm" autocomplete="off">
           <h2>JOIN ONLINE</h2>
-          <p>Play someone else's match on this screen, with the room code from their screen.</p>
+          <p>Got a room code from a friend's screen?</p>
           <div class="ocode"><input id="oCode" type="text" inputmode="text" maxlength="4" placeholder="ABCD" spellcheck="false" autocapitalize="characters" aria-label="Room code"><button class="btn primary" id="oJoin" type="submit">JOIN</button></div>
         </form>
       </div>
@@ -899,6 +949,21 @@ span.s-team{cursor:default;}
     </div>
   </div>
 
+
+  <div class="howto" id="howto" hidden role="dialog" aria-modal="true" aria-label="How to play">
+    <div class="ht-box">
+      <div class="kicker">HOW TO PLAY</div>
+      <h2 class="ht-goal">Knock the other tanks off the map.</h2>
+      <p class="ht-sub">The lower a tank's health, the farther hits throw it. Last tank standing wins.</p>
+      <div class="ht-cols">
+        <section class="ht-col ht-kb"><h3>KEYBOARD</h3><dl id="htKeys"></dl><p class="ht-mouse" id="htMouse"></p></section>
+        <section class="ht-col ht-touch"><h3>PHONE</h3><dl><dt>LEFT THUMB</dt><dd>Drive · push up to jet</dd><dt>RIGHT THUMB</dt><dd>Drag to aim · let go to fire</dd><dt>BOMB</dt><dd>Drag to throw · tap for a mine</dd><dt>WEAPON</dt><dd>Tap to swap</dd></dl></section>
+        <section class="ht-col ht-pad"><h3>CONTROLLER</h3><dl><dt>LEFT STICK</dt><dd>Drive</dd><dt>A</dt><dd>Jetpack</dd><dt>RIGHT STICK</dt><dd>Aim</dd><dt>RT</dt><dd>Fire</dd><dt>B</dt><dd>Bomb</dd><dt>Y</dt><dd>Swap weapon</dd></dl></section>
+      </div>
+      <p class="ht-tip"><b>★</b> Power-ups fall from the sky: drive into them.</p>
+      <button class="btn primary" id="htGo" type="button">GOT IT</button>
+    </div>
+  </div>
   <div class="screen" id="globby" hidden>
     <div class="lobby" id="gLobbyBox">
       <header class="lb-top">
@@ -940,7 +1005,7 @@ span.s-team{cursor:default;}
           <span class="start-note" id="gNote">Connecting…</span>
         </div>
       </aside>
-      <p class="small-note lb-foot">In the lobby, your drive keys change your tank, your swap-weapon key changes your two weapons and your fire key or <kbd class="kc">Enter</kbd> readies up. You can also click your tank’s name or weapons. Change any key in settings (the gear). The host starts the match.</p>
+      <p class="small-note lb-foot">Drive keys change your tank, the swap key your weapons, and the fire key or <kbd class="kc">Enter</kbd> readies up.</p>
 
       <div class="popover" id="gSetPop" hidden role="dialog" aria-label="Settings">
         <div class="pop-h">Sound</div>
@@ -1115,7 +1180,7 @@ const TANKS=[
   {name:'STRIKER',role:'SCOUT',perk:'25% faster with 25% more jet fuel and a slightly quicker reload, but 10% less health and easier to knock back.',shape:'light',speed:1.25,hp:90,blast:0.95,dmg:1,reload:0.96,jet:1.25,weight:0.85,kb:1,mspd:1,pips:[5,2,3,3,4]},
   {name:'BULWARK',role:'HEAVY',perk:'28% more health and 28% harder to knock back, but 20% slower with a slower reload.',shape:'heavy',speed:0.8,hp:128,blast:1,dmg:1.05,reload:1.15,jet:0.85,weight:1.28,kb:1,mspd:0.95,pips:[1,5,3,2,2]},
   {name:'RAVAGER',role:'DEMOLITION',perk:'15% bigger blasts, 10% more damage and 12% more knockback, but reloads 10% slower.',shape:'mortar',speed:0.95,hp:100,blast:1.15,dmg:1.1,reload:1.1,jet:1,weight:1.05,kb:1.12,mspd:1,pips:[3,3,5,2,3]},
-  {name:'VIPER',role:'RAPID FIRE',perk:'Reloads 26% faster with quicker missiles, but 20% less damage and 10% less health.',shape:'twin',speed:1.05,hp:90,blast:0.9,dmg:0.8,reload:0.74,jet:1.05,weight:0.95,kb:0.9,mspd:1.08,pips:[3,2,2,5,3]}
+  {name:'VIPER',role:'RAPID FIRE',perk:'Reloads 22% faster with quicker missiles, but 20% less damage and 10% less health.',shape:'twin',speed:1.05,hp:90,blast:0.9,dmg:0.8,reload:0.78,jet:1.05,weight:0.95,kb:0.9,mspd:1.08,pips:[3,2,2,5,3]}
 ];
 // Weapons every tank can switch between. reload is seconds (scaled by the tank's reload stat), spd is a fixed muzzle
 // speed (missile and bazooka use the drag/charge power instead), g scales gravity, R is the blast radius.
@@ -2682,8 +2747,19 @@ function actUpdate(dt){
 }
 // ---------- what the map changes look like (runs on every screen) ----------
 let avMesh=null; const meteorMeshes=[];
+const VFX={t:0};
+function victoryFX(dt){
+  if(G.phase!=='victory'){ VFX.t=0.6; return; } if(dt<=0) return;
+  const all=G.winTeam>=0?G.tanks.filter(t=>t.team===G.winTeam):G.tanks.filter(t=>t.p.slot===G.winner); if(!all.length) return;
+  VFX.t-=dt; if(VFX.t>0) return; VFX.t=rand(0.3,0.6);
+  const on=all.filter(t=>t.onField), tk=(on.length?on:all)[(Math.random()*(on.length||all.length))|0], c=lin(tk.st.color,1), v=world.arena.view;
+  const x=on.length?tk.x+rand(-2.5,6):rand(v[0]*0.5,v[1]*0.5), y=on.length?tk.y+rand(2.4,5):rand(v[2]+(v[3]-v[2])*0.5,v[3]), z=rand(-0.5,2);
+  for(let i=0;i<64;i++){ const a=rand(0,TAU), sp=rand(3.5,9); addP.spawn({x,y,z,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,vz:rand(-1.5,1.5),life:rand(.9,1.5),s0:rand(.3,.46),s1:.05,c0:c.map(v=>v*10),c1:c.map(v=>v*2),a0:1,a1:0,drag:1.6,g:4}); }
+  for(let i=0;i<12;i++) addP.spawn({x,y,z,vx:rand(-1.5,1.5),vy:rand(-1.5,1.5),life:rand(.3,.5),s0:1.1,s1:.2,c0:[12,12,10],c1:c.map(v=>v*4),a0:1,a1:0,drag:3});
+  fxD++; try{ SFX.firework(); } finally{ fxD--; }
+}
 function mapVisual(dt){
-  gemVisual(dt);
+  gemVisual(dt); victoryFX(dt);
   ventVisual(dt);
   const A=world.arena; if(!A) return;
   const qk=QUAKE.on?QUAKE.k:0, rq=RISE.on&&RISE.kind.k==='quake';
@@ -3558,6 +3634,7 @@ const SFX=(()=>{
     wind(){ noise(3.5,0.2,'bandpass',500,1600,0.7); },
     avalanche(){ noise(3.6,0.42,'lowpass',520,120,0.8); tone(40,3,'sine',0.3,30); },
     meteor(){ tone(900,0.9,'sine',0.04,120); noise(0.9,0.1,'highpass',2000,600,1); },
+    firework(){ tone(320+Math.random()*240,0.22,'sine',0.025,1500); noise(0.07,0.12,'bandpass',2400,1100,1.2,0.2); for(let i=0;i<5;i++) noise(0.03,0.045,'highpass',5200,3200,1,0.28+i*0.05+Math.random()*0.04); },
     combo(n){ const f=520+Math.min(6,n)*110; tone(f,0.1,'square',0.06,f*1.5); tone(f*1.5,0.14,'triangle',0.05,f*2,0.06); },
     // signature sounds: each map event is recognisable by ear before it hits
     sigVanish(){ tone(92,1.8,'sawtooth',0.07,52); tone(61,2,'sine',0.18,40); [0.25,0.6,0.9,1.25,1.5,1.8,2.05,2.3].forEach(d=>{ noise(0.07,0.32,'highpass',2600,1500,1,d); tone(1500+Math.random()*900,0.04,'square',0.025,500,d); }); },
@@ -3648,7 +3725,7 @@ function setWeapon(tk,w){
   w=((w|0)%WEAPONS.length+WEAPONS.length)%WEAPONS.length; if(w===tk.weapon) return;
   if(tk.loadout&&!tk.loadout.includes(w)) return;
   tk.weapon=w; tk.p.weapon=w; tk.reload=Math.max(tk.reload,0.35); tk.charging=false; tk.autoFire=false;
-  if(tk.onField){ popupWorld(tk.x,tk.y+2.6*tk.s,WEAPONS[w].icon+' '+WEAPONS[w].name,null,tk.p.slot,'wpn'); SFX.ui(); buzz(tk.p,[8]); }
+  if(tk.onField&&tk.p.src!=='cpu'){ popupWorld(tk.x,tk.y+2.6*tk.s,WEAPONS[w].icon+' '+WEAPONS[w].name,null,tk.p.slot,'wpn'); SFX.ui(); buzz(tk.p,[8]); }
 }
 function applyControls(tk,c,dt){
   // weapon choice works any time (a phone sends the weapon it wants; keys and pads step through them)
@@ -4496,7 +4573,7 @@ function tickRest(rdt){
   if(G.phase==='countdown'){
     const step=Math.floor(G.pt/0.8);
     if(step!==G.cdStep){ G.cdStep=step;
-      if(step<3){ banner(String(3-step),step===0?'GET READY':'','go',0.8); SFX.tick(false); }
+      if(step<3){ banner(String(3-step),step===0?world.arena.name.toUpperCase()+' · '+(G.gem?'KEEP AWAY':G.timed?G.mins+(G.mins===1?' MINUTE':' MINUTES'):G.lives+(G.lives===1?' LIFE':' LIVES')):step===1?'GET READY':'','go',0.8); SFX.tick(false); }
       else { G.phase='battle'; G.pt=0; banner('BRAWL!',G.gem?'GRAB THE CORE · FIRST TO HOLD IT FOR '+fmtTime(G.gemGoal)+' WINS':G.timed?'HIGHEST SCORE IN '+G.mins+(G.mins===1?' MINUTE':' MINUTES')+' WINS':G.teamMode?'LAST TEAM STANDING WINS':'LAST TANK STANDING WINS','go',1.2); SFX.go(); broadcastPhase(); } }
   } else if(G.phase==='battle'){ G.matchT+=dt; if(G.timed&&!G.gem&&!G.sudden&&!G.ending){ const was=Math.ceil(G.timeLeft); G.timeLeft-=dt; if(G.timeLeft<=0){ G.timeLeft=0; timeUp(); } else if(was<=10&&Math.ceil(G.timeLeft)<was) SFX.tick(was<=4); } }
   if(G.phase==='countdown'||G.phase==='battle'){ G.cpuDt=dt; for(const tk of G.tanks) applyControls(tk,controlsFor(tk.p),dt); }
@@ -4720,7 +4797,9 @@ function mouseControls(p,c){
   sync();
 }
 function mouseCursor(){ const on=mouseLive()&&G.tanks.some(t=>t.p.src===G.mouseFor||(G.role==='guest'&&t.p.slot===(typeof OL!=='undefined'?OL.slot:-1))); if(on!==app.classList.contains('maim')) app.classList.toggle('maim',on); }
+addEventListener('click',e=>{ if(e.detail>0){ const b=e.target.closest&&e.target.closest('button'); if(b) b.blur(); } },true);
 addEventListener('keydown',e=>{
+  if(!$('howto').hidden){ if(e.code==='Escape'||e.code==='Enter'||e.code==='NumpadEnter'||e.code==='Space'){ e.preventDefault(); SFX.init(); closeHowTo(); } return; }
   if(keyCapture(e)) return;
   SFX.init();
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault();
@@ -4776,6 +4855,24 @@ function lobbyInputs(rdt){
   updateStartUI(ps.length,allReady);
   if(G.autoT>1.6) startCountdown();
 }
+// Quick Play: straight into a match against CPUs (the room stays open, so friends can still join the next one).
+// The first time, the how-to-play card shows first.
+function quickPlay(){
+  SFX.init(); SFX.ui();
+  const go=()=>{ startHost(); if(!OL.touchOn&&!G.players.some(p=>p&&p.src==='kb1')) addPlayer('kb1');
+    let n=G.players.filter(Boolean).length; while(n<4&&addCpu()) n++;
+    G.players.forEach(p=>{ if(p) p.ready=true; }); startCountdown(); };
+  let seen=false; try{ seen=localStorage.getItem('salvo-howto')==='1'; }catch(e){}
+  if(seen) go(); else showHowTo(go);
+}
+const HOWTO={after:null};
+function showHowTo(after){
+  const k=KM.kb1;
+  $('htKeys').innerHTML=[[kbd(k.l)+kbd(k.r),'Drive'],[kbd(k.up),'Jetpack (hold)'],[kbd(k.dn),'Drop down'],[kbd(k.sl)+kbd(k.sr),'Aim'],['HOLD '+kbd(k.fire),'Charge and fire'],[kbd(k.bomb),'Bomb'],[kbd(k.wpn),'Swap weapon']].map(r=>'<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>').join('');
+  $('htMouse').textContent=G.mouseFor==='off'?'':'Mouse or trackpad: point to aim, click to fire.';
+  HOWTO.after=after||null; $('htGo').textContent=after?"LET'S GO":'GOT IT'; $('howto').hidden=false; setTimeout(()=>{ try{ $('htGo').focus(); }catch(e){} },30);
+}
+function closeHowTo(){ if($('howto').hidden) return; $('howto').hidden=true; try{ localStorage.setItem('salvo-howto','1'); }catch(e){} const f=HOWTO.after; HOWTO.after=null; if(f) f(); }
 function confirmKey(){
   if(G.phase==='lobby'&&!$('lobby').hidden) startCountdown();
   else if(G.phase==='victory'&&G.pt>0.8){ SFX.ui(); startCountdown(); }
@@ -5000,16 +5097,21 @@ function hud(rdt){
         setT(Tg.hb,'width',(tk.hp/tk.maxHp*100).toFixed(0)+'%'); setT(Tg.fb,'width',(tk.fuel/tk.fuelMax*100).toFixed(0)+'%'); }
     }
   }
-  for(let i=pops.length-1;i>=0;i--){ const p=pops[i]; p.t+=rdt; if(p.t>1.55){ p.el.remove(); pops.splice(i,1); continue; }
-    const pr=project(p.x,p.y); p.el.style.transform='translate('+pr.x.toFixed(1)+'px,'+pr.y.toFixed(1)+'px) translate(-50%,-100%)'; }
+  for(let i=pops.length-1;i>=0;i--){ const p=pops[i]; p.t+=rdt; if(p.t>1.55){ p.el.remove(); pops.splice(i,1); continue; } popPlace(p); }
 }
 function popupWorld(x,y,val,label,slot,cls){
   if(pops.length>14){ const o=pops.shift(); o.el.remove(); }
   const pt=G.teamMode&&G.players[slot]?teamOfSlot(slot):-1; const el=document.createElement('div'); el.className='pop pop-in '+colorCls(slot,pt)+' '+(cls||'');
   const v=document.createElement('div'); v.className='pv'; v.textContent=val; el.appendChild(v);
   if(label){ const l=document.createElement('div'); l.className='pl'; l.textContent=label; el.appendChild(l); }
-  hudEls.pops.appendChild(el); pops.push({el,x,y,t:0});
-  const pr=project(x,y); el.style.transform='translate('+pr.x.toFixed(1)+'px,'+pr.y.toFixed(1)+'px) translate(-50%,-100%)';
+  const n=pops.filter(o=>o.t<0.7&&Math.abs(o.x-x)<2.6&&Math.abs(o.y-y)<2.6).length;
+  hudEls.pops.appendChild(el); const p={el,x,y,t:0,dy:Math.min(n,4)*30,hw:0}; pops.push(p); popPlace(p);
+}
+// a damage number on screen: lifted above the others near it, and kept inside the screen edges
+function popPlace(p){
+  const pr=project(p.x,p.y); if(!p.hw) p.hw=(p.el.offsetWidth||80)/2;
+  const W=hudEls.pops.clientWidth||innerWidth, x=clamp(pr.x,p.hw+8,Math.max(p.hw+8,W-p.hw-8)), y=Math.max(pr.y-p.dy,56);
+  p.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) translate(-50%,-100%)';
 }
 function banner(main,sub,cls,dur){
   const b=hudEls.banner; b.className=''; void b.offsetWidth;
@@ -5206,6 +5308,7 @@ function buildMenus(){
   $('startBtn').addEventListener('click',()=>{ SFX.init(); startCountdown(); });
   $('retryBtn').addEventListener('click',()=>{ if(NET.P) openRoom(); });
   $('resumeBtn').addEventListener('click',()=>setPaused(false));
+  $('pHowBtn').addEventListener('click',()=>{ SFX.ui(); showHowTo(); });
   document.querySelectorAll('[data-mouse]').forEach(b=>b.addEventListener('click',()=>setMouse(b.dataset.mouse)));
   document.querySelectorAll('[data-keys]').forEach(b=>b.addEventListener('click',()=>{ SFX.init(); SFX.ui(); openKeys(); }));
   $('kdGrid').addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('.kbtn'); if(!b) return; keyCap={src:b.dataset.src,a:b.dataset.a}; $('kdMsg').textContent=''; renderKeys(); });
@@ -5543,9 +5646,9 @@ function olBoot(){
   G.phase='boot'; $('hud').hidden=true; showScreen('online');
   let role='', code='', msg='';
   try{ role=sessionStorage.getItem('salvo-ol-role')||''; code=sessionStorage.getItem('salvo-ol-code')||''; msg=sessionStorage.getItem('salvo-ol-msg')||''; sessionStorage.removeItem('salvo-ol-msg'); }catch(e){}
-  let j='', hostNow=false; try{ const q=new URLSearchParams(location.search); j=(q.get('join')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4); OL.forceTouch=q.get('touch')==='1'; hostNow=q.get('host')==='1'; }catch(e){}
+  let j='', hostNow=false; try{ const q=new URLSearchParams(location.search); j=(q.get('join')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4); OL.forceTouch=q.get('touch')==='1'; hostNow=q.get('host')==='1'; OL.quickNow=q.get('quick')==='1'; }catch(e){}
   if(touchDevice()||OL.forceTouch) app.classList.add('phone');
-  if(j||OL.forceTouch||hostNow){ try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} }
+  if(j||OL.forceTouch||hostNow||OL.quickNow){ try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){} }
   tpWire();
   $('oCode').value=j||(role==='guest'?code:'');
   try{ OL.myName=cleanName(localStorage.getItem('salvo-ol-name')||localStorage.getItem('salvo-name')||''); }catch(e){ OL.myName=''; } $('oName').value=OL.myName;
@@ -5553,6 +5656,9 @@ function olBoot(){
   $('oName').addEventListener('blur',()=>{ $('oName').value=OL.myName; });
   olMsgLine(msg);
   $('oHost').addEventListener('click',()=>{ SFX.init(); SFX.ui(); startHost(); });
+  $('oQuick').addEventListener('click',()=>quickPlay());
+  $('oHow').addEventListener('click',()=>{ SFX.init(); SFX.ui(); showHowTo(); });
+  $('htGo').addEventListener('click',()=>{ SFX.ui(); closeHowTo(); });
   $('oJoinForm').addEventListener('submit',e=>{ e.preventDefault(); SFX.init(); const c=$('oCode').value.toUpperCase().replace(/[^A-Z]/g,''); if(c.length!==4){ olMsgLine('Type the 4-letter room code from the host’s screen.'); $('oCode').focus(); return; } SFX.ui(); startGuest(c); });
   $('oCode').addEventListener('input',()=>{ const i=$('oCode'), v=i.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4); if(i.value!==v) i.value=v; });
   $('hostBack').addEventListener('click',()=>{ try{ sessionStorage.removeItem('salvo-ol-role'); }catch(e){} try{ if(NET.peer) NET.peer.destroy(); }catch(e){} location.reload(); });
@@ -5565,6 +5671,7 @@ function olBoot(){
   $('gReady').addEventListener('click',()=>guestReady()); $('gTeam').addEventListener('click',()=>{ SFX.ui(); olSend({t:'team'}); });
   $('gFs').addEventListener('click',()=>$('fsBtn').click());
   if(j.length===4) startGuest(j);
+  else if(OL.quickNow) quickPlay();
   else if(hostNow||role==='host') startHost();
   else if(role==='guest'&&/^[A-Z]{4}$/.test(code)) startGuest(code);
 }
@@ -6020,7 +6127,7 @@ function renderGuestPad(){
   const svg=ok?qrSVG(url):'';
   if(svg){ if(qr._url!==url){ qr._url=url; qr.innerHTML=svg; qr.className='qr'; } }
   else { qr._url=''; qr.className='qr empty'; qr.textContent=ok?'SCAN UNAVAILABLE':'GETTING READY'; }
-  $('gPadStatus').textContent=OL.pad.conn?'Your phone is connected. Use it to drive and aim, or keep using the keys.':'Optional: scan with your phone camera to use it as your controller instead of the keys.';
+  $('gPadStatus').textContent=OL.pad.conn?'Phone connected: drive and aim with it.':'Optional: scan to use your phone as the controller.';
 }
 function renderGuestHelp(){
   const a=KM.kb1, b=KM.kb2, el1=$('gCtl1'), el2=$('gCtl2'); if(!el1||!el2) return;
@@ -6048,7 +6155,7 @@ function bgStep(){
 G.arena=clamp((saved.arena!==undefined?saved.arena:store.arena)|0,0,ARENAS.length-1);
 G.wins=Array.isArray(saved.wins)?saved.wins.slice(0,MAXP):Array.isArray(store.wins)?store.wins.slice(0,MAXP):[];
 while(G.wins.length<MAXP) G.wins.push(0);
-G.pwrOn=saved.pwrOn!==undefined?!!saved.pwrOn:store.pwrOn!==undefined?!!store.pwrOn:!!store.starOn;
+G.pwrOn=saved.pwrOn!==undefined?!!saved.pwrOn:store.pwrOn!==undefined?!!store.pwrOn:store.starOn!==undefined?!!store.starOn:true;
 G.amode=['regular','classic','bounce','active','rising'].includes(store.amode)?store.amode:'regular'; { const pk=store.pauseKey; if(typeof pk==='string'&&/^[A-Za-z0-9]{2,24}$/.test(pk)&&!KEY_BLOCK.includes(pk)) GK.pause=pk; } loadKeys(store.keys);
   { const cm=store.cam||{}; if(CAM_Z[cm.z]) CAMV.zoom=cm.z; if(typeof cm.f==='boolean') CAMV.follow=cm.f; }
   { const tg=store.tags||{}; if(TAG_SZ[tg.size]) TAGS.size=tg.size; if(['min','std','bold'].includes(tg.style)) TAGS.style=tg.style; applyTags(); syncPauseKey(); $('pauseBtn').addEventListener('click',pausePress); } G.mouseFor=['off','kb1','kb2'].includes(store.mouse)?store.mouse:'kb1'; G.mode=['time','gem'].includes(store.mode)?store.mode:'stock'; G.mins=clamp(store.mins|0||3,1,10); G.gemGoal=clamp(Math.round((store.gemGoal|0||60)/15)*15,15,300); G.lives=clamp(store.lives|0||3,1,9); G.teamsOn=!!store.teamsOn; G.cpuLevel=clamp(store.cpuLevel|0||5,1,10); G.size=SIZES.includes(store.size)?store.size:'regular';
