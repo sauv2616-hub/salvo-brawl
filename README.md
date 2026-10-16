@@ -339,18 +339,19 @@ They all use the same missiles, bombs and jetpack, and differ in these stats (th
 ## If something goes wrong
 
 - **"No game is open with room code …":** check the code on the host's screen. If the host just opened or reloaded the game, wait a few seconds and try again. Room codes are letters only.
-- **"Found room … but couldn't link up":** one of the networks is blocking direct connections. This happens on some school, work and public Wi-Fi. Try a different network; a phone hotspot usually works. The game also tries free public relay servers automatically, but they come with no guarantees.
-- **"Couldn't reach the game server":** your internet connection or network is blocking PeerJS's connection server. Check the connection, or try another network.
+- **"Found room … but couldn't link up":** the game tries a direct link and the backup relay, so this only happens when a device is offline or its network blocks secure web connections (some strict school or work networks). Check both devices are online, or try another network.
 - **"Room … is full":** 8 players is the limit, including CPUs and local players on the host computer.
 - **The game feels slightly behind:** each guest sees the host's game a fraction of a second late (usually about 0.15 seconds), a bit more over long distances or busy Wi-Fi. That is normal for online play. The host's own computer has no delay, so for the fairest games the host can be the player with the strongest connection.
-- **A guest's phone won't link:** the phone links to the guest's computer, so it needs to be able to reach that computer (being on the same Wi-Fi is the most reliable). Scan the QR code on the guest's lobby screen, not the host's.
+- **A guest's phone won't link:** the phone links to the guest's computer, so scan the QR code on the guest's lobby screen, not the host's.
 - **The host's screen shows "NO ROOM":** the host computer couldn't reach the connection server. Check the internet connection and click **TRY AGAIN**.
 
 ## How it works
 
-GitHub Pages only serves files; it can't run a game server. So one screen runs the game (the host), and phones in the room and players online connect straight to it using WebRTC, the same peer-to-peer technology video calls use. PeerJS's free public server only introduces the computers to each other; after that, the game traffic goes directly between them. When a network doesn't allow a direct link, the traffic goes through a free public relay instead (PeerJS's or Metered's Open Relay).
+GitHub Pages only serves files; it can't run a game server. So one screen runs the game (the host), and phones in the room and players online connect straight to it using WebRTC, the same peer-to-peer technology video calls use. PeerJS's free public server only introduces the devices to each other; after that, the game traffic goes directly between them.
+
+A direct link only works when both networks let the two devices reach each other, and different Wi-Fi networks, mobile data, guest Wi-Fi and some browser privacy settings (Safari's among them) can stop it. So every phone and online player dials the game two ways at once: directly, and through a backup relay, a public MQTT message broker (EMQX, HiveMQ or Mosquitto's free test brokers) reached over an ordinary secure web connection. The direct link gets a short head start and is used whenever it works, because it's quicker; otherwise the relay carries the game, a little slower but on almost any network. Phones don't need to be on the same Wi-Fi, and any browser works. Only game messages go through the relay (inputs, health, names on the scoreboard), nothing else. The relay brokers are free public services with no guarantees; the game listens on all three, so one being down doesn't matter.
 
 The host runs the real match. Twenty times a second it sends every guest where each tank, missile, bomb and power-up is, plus every explosion and sound, and each guest draws the battle itself with its own camera. Guests send their key presses (or their phone's input) back to the host. Phones used as controllers in the room only send their input, which is why they feel instant. Nothing is stored online and no accounts are needed. Each guest uses roughly 10–40 KB per second.
 
-**Optional, only if friends often can't link up:** a dedicated relay (a "TURN server") makes connections work on almost any network. Metered.ca has a free plan; it gives you a username and password that would be added to the connection list in `rtcConfig()` in both `index.html` and `controller.html`. This isn't needed for most home networks.
+**Optional:** a dedicated TURN server (Metered.ca has a free plan) would make more links direct instead of going through the backup relay. Its username and password would go in the connection list in `rtcConfig()` in both `index.html` and `controller.html`. It isn't needed: the backup relay already covers the networks a direct link can't reach.
 

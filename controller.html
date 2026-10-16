@@ -710,6 +710,120 @@ function sha1(m){ const b=m.slice(), ml=m.length*8; b.push(128); while(b.length%
   const out=[]; [h0,h1,h2,h3,h4].forEach(h=>out.push((h>>>24)&255,(h>>>16)&255,(h>>>8)&255,h&255)); return out; }
 function hmacSha1(key,msg){ let k=key.length>64?sha1(key):key.slice(); while(k.length<64) k.push(0); return sha1(k.map(x=>x^0x5c).concat(sha1(k.map(x=>x^0x36).concat(msg)))); }
 function utf8(s){ return Array.from(unescape(encodeURIComponent(s)),c=>c.charCodeAt(0)); }
+// ---------- relay link: for when a direct link can't be made ----------
+// A direct (WebRTC) link only works when both networks let the two devices reach each other. Different networks,
+// mobile data, guest Wi-Fi and some browser privacy settings (Safari's among them) block it, and the free relay
+// servers for direct links come and go. So every link is dialled two ways at once: directly, and through a public
+// MQTT message relay over an ordinary secure web connection, which gets through almost any network. The direct
+// link gets a short head start and wins when it works (it's quicker); otherwise the relay carries the game.
+// Only game messages go through it (inputs, health, the scoreboard): nothing personal.
+const RELAY_URLS=(typeof window!=='undefined'&&Array.isArray(window.__SALVO_RELAY__))?window.__SALVO_RELAY__:
+  ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];
+const RELAY_ROOT='salvobrawl/r1/';
+// a tiny MQTT 3.1.1 client (QoS 0 only) over a secure WebSocket
+function mqttWS(url){
+  const ev={}, on=(k,f)=>{ (ev[k]=ev[k]||[]).push(f); }, emit=(k,a,b)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a,b); }catch(e){ console.error(e); } }); };
+  const te=new TextEncoder(), td=new TextDecoder();
+  const cat=(...a)=>{ let n=0; for(const x of a) n+=x.length; const o=new Uint8Array(n); let i=0; for(const x of a){ o.set(x,i); i+=x.length; } return o; };
+  const pkt=(head,body)=>{ const h=[head]; let x=body.length; do{ let d=x%128; x=Math.floor(x/128); if(x>0) d|=128; h.push(d); }while(x>0); return cat(Uint8Array.from(h),body); };
+  const lstr=s=>{ const b=te.encode(s); return cat(Uint8Array.of(b.length>>8,b.length&255),b); };
+  let ws=null, up=false, done=false, pid=1, ping=0, buf=new Uint8Array(0);
+  const raw=b=>{ try{ if(ws&&ws.readyState===1) ws.send(b); }catch(e){} };
+  const close=()=>{ if(done) return; done=true; up=false; clearInterval(ping); try{ if(ws.readyState===1) ws.send(Uint8Array.of(0xE0,0)); ws.close(); }catch(e){} emit('close'); };
+  const api={ on, get up(){ return up; }, close,
+    subscribe(t){ raw(pkt(0x82,cat(Uint8Array.of(pid>>8,pid&255),lstr(t),Uint8Array.of(0)))); pid=pid%65535+1; },
+    publish(t,s){ raw(pkt(0x30,cat(lstr(t),te.encode(s)))); } };
+  try{ ws=new WebSocket(url,['mqtt']); }catch(e){ setTimeout(close,0); return api; }
+  ws.binaryType='arraybuffer';
+  ws.onopen=()=>{ const id=('sb'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)).slice(0,23); raw(pkt(0x10,cat(lstr('MQTT'),Uint8Array.of(4,2,0,30),lstr(id)))); };
+  ws.onmessage=e=>{
+    if(!(e.data instanceof ArrayBuffer)) return; const b=new Uint8Array(e.data); buf=buf.length?cat(buf,b):b;
+    while(buf.length>=2){
+      let mul=1, len=0, i=1, ok=false;
+      while(i<buf.length&&i<=4){ const d=buf[i++]; len+=(d&127)*mul; mul*=128; if(!(d&128)){ ok=true; break; } }
+      if(!ok||buf.length<i+len) return;
+      const type=buf[0]>>4, fl=buf[0]&15, body=buf.subarray(i,i+len); buf=buf.subarray(i+len);
+      if(type===2){ if(body[1]===0){ up=true; ping=setInterval(()=>raw(Uint8Array.of(0xC0,0)),20000); emit('connect'); } else { close(); return; } }
+      else if(type===3){ const tl=(body[0]<<8)|body[1]; let p=2+tl; if((fl>>1)&3) p+=2; emit('message',td.decode(body.subarray(2,2+tl)),td.decode(body.subarray(p))); }
+      else if(type===9) emit('suback');
+    } };
+  ws.onclose=()=>{ if(done) return; done=true; up=false; clearInterval(ping); emit('close'); };
+  ws.onerror=()=>{};
+  return api;
+}
+// one end of a relay link; to the rest of the game it looks just like a direct link (on / send / close / open)
+function relayConn(cid,outTopic,dialer){
+  const ev={}, c={relay:true,open:false,closed:false,peer:'relay:'+cid,metadata:{},sock:null,lastRx:Date.now(),lastTx:0,onEnd:null,
+    on(k,f){ (ev[k]=ev[k]||[]).push(f); return c; },
+    send(d){ if(c.open) c.raw({k:'d',d}); },
+    close(){ if(c.closed) return; c.raw({k:'b'}); c.end(); } };
+  c.emit=(k,a)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a); }catch(e){ console.error(e); } }); };
+  c.raw=o=>{ if(!c.sock) return; if(dialer) o.c=cid; try{ c.sock.publish(outTopic,JSON.stringify(o)); c.lastTx=Date.now(); }catch(e){} };
+  c.up=()=>{ if(c.open||c.closed) return; c.open=true; c.lastRx=Date.now(); c.emit('open'); };
+  c.rx=o=>{ c.lastRx=Date.now(); if(o.k==='d'){ if(c.open) c.emit('data',o.d); } else if(o.k==='b') c.end(); else if(o.k==='w'&&dialer) c.up(); };
+  c.end=()=>{ if(c.closed) return; c.closed=true; c.open=false; clearInterval(c.tick); if(c.onEnd) c.onEnd(); c.emit('close'); };
+  // the other end is gone if nothing arrives for a while (a dialer that nobody answers gives up sooner)
+  c.tick=setInterval(()=>{ const n=Date.now(); if(n-c.lastRx>(c.open||!dialer?12000:7000)) c.end(); else if(c.open&&n-c.lastTx>2500) c.raw({k:'p'}); },1000);
+  return c;
+}
+// the phone (or online player) end: use whichever relay answers first, then say hello until the game screen answers
+function relayDial(id,cid,meta){
+  const root=RELAY_ROOT+id, c=relayConn(cid,root+'/h',true), socks=[]; let hello=0, left=RELAY_URLS.length;
+  c.metadata=meta||{};
+  c.onEnd=()=>{ clearInterval(hello); socks.forEach(s=>s.close()); };
+  RELAY_URLS.forEach(u=>{ const s=mqttWS(u); socks.push(s);
+    s.on('connect',()=>{ if(c.sock||c.closed){ s.close(); return; } c.sock=s; s.subscribe(root+'/c/'+cid); socks.forEach(o=>{ if(o!==s) o.close(); }); });
+    s.on('suback',()=>{ if(c.sock!==s||c.closed) return; c.lastRx=Date.now(); const hi=()=>{ if(c.open||c.closed){ clearInterval(hello); return; } c.raw({k:'h',m:c.metadata}); }; hi(); clearInterval(hello); hello=setInterval(hi,1000); });
+    s.on('message',(t,str)=>{ if(c.sock!==s) return; let o=null; try{ o=JSON.parse(str); }catch(e){} if(o&&typeof o==='object') c.rx(o); });
+    s.on('close',()=>{ if(c.sock===s) c.end(); else if(!c.sock&&--left<=0) c.end(); }); });
+  return c;
+}
+// the game screen end: listen on every relay at once, so a phone can come in through whichever one it reaches
+function relayHost(id,onConn,onReady){
+  const H={on:true,socks:[],peers:{},ready:false}, root=RELAY_ROOT+id;
+  const open=(u,n)=>{ if(!H.on) return; const s=mqttWS(u); H.socks.push(s);
+    s.on('connect',()=>{ n=0; s.subscribe(root+'/h'); });
+    s.on('suback',()=>{ if(!H.ready){ H.ready=true; if(onReady) try{ onReady(); }catch(e){ console.error(e); } } });
+    s.on('message',(t,str)=>{ if(!H.on) return; let o=null; try{ o=JSON.parse(str); }catch(e){} if(!o||typeof o!=='object') return;
+      const cid=String(o.c||'').slice(0,40); if(!cid) return; let c=H.peers[cid];
+      if(o.k==='h'){
+        if(!c||c.closed){ c=relayConn(cid,root+'/c/'+cid,false); c.sock=s; c.metadata=o.m&&typeof o.m==='object'?o.m:{}; H.peers[cid]=c; const me=c; c.onEnd=()=>{ if(H.peers[cid]===me) delete H.peers[cid]; }; onConn(c); c.up(); }
+        c.sock=s; c.lastRx=Date.now(); c.raw({k:'w'}); return; }
+      // a phone still talking to a game screen that has since reloaded: tell it to start over
+      if(!c){ if(o.k!=='b') s.publish(root+'/c/'+cid,JSON.stringify({k:'b'})); return; }
+      c.sock=s; c.rx(o); });
+    s.on('close',()=>{ H.socks=H.socks.filter(x=>x!==s); if(H.on) setTimeout(()=>open(u,n+1),Math.min(30000,2000*(n+1))); }); };
+  RELAY_URLS.forEach(u=>open(u,0));
+  H.stop=()=>{ if(!H.on) return; H.on=false; Object.values(H.peers).forEach(c=>c.close()); H.socks.forEach(s=>s.close()); H.socks=[]; };
+  return H;
+}
+// Dial a game screen both ways: directly, and after `delay` ms (or as soon as the direct link fails) through the relay.
+// Whichever opens first carries the game; the other is dropped. Looks like a single link to the caller.
+function raceConnect(peer,id,opts,cid,delay,meta){
+  let direct=null, relay=null, rT=0;
+  const ev={}, R={open:false,closed:false,relay:false,win:null,metadata:meta||{},
+    on(k,f){ (ev[k]=ev[k]||[]).push(f); return R; },
+    send(d){ if(R.open&&R.win) R.win.send(d); },
+    close(){ end(); },
+    get peerConnection(){ return direct&&direct.peerConnection||null; } };
+  const emit=(k,a)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a); }catch(e){ console.error(e); } }); };
+  const kill=c=>{ if(!c) return; c._dead=true; try{ c.close(); }catch(e){} };
+  const end=()=>{ if(R.closed) return; R.closed=true; R.open=false; clearTimeout(rT); kill(direct); kill(relay); emit('close'); };
+  const startRelay=()=>{ if(relay||R.win||R.closed) return; clearTimeout(rT); relay=relayDial(id,cid,R.metadata); wire(relay); };
+  const lose=()=>{ if(R.win||R.closed) return; const dd=!direct||direct._dead; if(!relay){ if(dd) startRelay(); } else if(relay._dead&&dd) end(); };
+  const wire=c=>{
+    c.on('open',()=>{ if(R.closed||(R.win&&R.win!==c)){ kill(c); return; } if(R.win) return;
+      R.win=c; R.open=true; R.relay=!!c.relay; clearTimeout(rT); kill(c===direct?relay:direct); emit('open'); });
+    c.on('data',d=>{ if(R.win===c) emit('data',d); });
+    const gone=()=>{ if(R.win===c){ if(!R.closed){ c._dead=true; end(); } return; } if(c._dead) return; c._dead=true; lose(); };
+    c.on('close',gone); c.on('error',gone); };
+  R.startRelay=startRelay;
+  // the game server says there's no such room: stop waiting on a direct link and try the relay
+  R.noDirect=()=>{ if(R.win||R.closed) return; kill(direct); direct=null; startRelay(); if(relay&&relay._dead) end(); };
+  if(peer){ try{ direct=peer.connect(id,opts); wire(direct); }catch(e){ direct=null; } }
+  rT=setTimeout(startRelay,direct?delay:0);
+  return R;
+}
 function rtcConfig(){
   const list=[{urls:['stun:stun.l.google.com:19302','stun:stun.cloudflare.com:3478']},
     {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}];
@@ -734,31 +848,29 @@ function linkState(){ try{ const pc=S.conn&&S.conn.peerConnection; return pc&&pc
 function noRTC(){ S.leaving=true; cleanup(); msg("THIS BROWSER CAN'T CONNECT","Open this page in Chrome (Android) or Safari (iPhone). Apps that scan QR codes sometimes open links in a browser that can't make the connection.",'TRY AGAIN',retryNow,'CHANGE CODE',changeCode); }
 function connect(retry){
   const P=getPeer();
-  if(!P){
-    if(libState==='loading'){ pendingConnect=true; msg('JOINING '+S.code,'Loading the controller…'); return; }
-    msg("CAN'T CONNECT","The connection library didn't load. Check your internet, then reload this page.",'RELOAD',()=>location.reload()); return;
-  }
-  if(!hasRTC()){ noRTC(); return; }
-  cleanup(); S.welcomed=false; S.leaving=false; S.attempt=retry?S.attempt+1:1; S.stage='server'; const tok=++S.tok;
-  msg(S.reconnecting?'RECONNECTING':'JOINING '+S.code, S.attempt>1?'Trying again ('+S.attempt+' of '+maxTries()+')…':S.reconnecting?'Lost the link to the game screen. Reconnecting…':'Reaching the game server…');
-  let peer; try{ peer=new P({debug:0,config:rtcConfig()}); }catch(e){ tryFailed(); return; }
+  if(!P&&libState==='loading'){ pendingConnect=true; msg('JOINING '+S.code,'Loading the controller…'); return; }
+  cleanup(); S.welcomed=false; S.leaving=false; S.notHere=false; S.attempt=retry?S.attempt+1:1; S.stage='server'; const tok=++S.tok;
+  msg(S.reconnecting?'RECONNECTING':'JOINING '+S.code, S.attempt>1?'Trying again ('+S.attempt+' of '+maxTries()+')…':S.reconnecting?'Lost the link to the game screen. Reconnecting…':'Reaching the game…');
+  const id=PREFIX+S.code.toLowerCase();
+  let peer=null; if(P&&hasRTC()){ try{ peer=new P({debug:0,config:rtcConfig()}); }catch(e){ peer=null; } }
   S.peer=peer;
-  S.timer=setTimeout(()=>{ if(tok===S.tok&&!S.welcomed) tryFailed(); },16000);
-  peer.on('open',()=>{
-    if(tok!==S.tok) return;
-    setStage('link','Found the game. Linking to the game screen…');
-    const conn=peer.connect(PREFIX+S.code.toLowerCase(),{reliable:true,serialization:'json'});
+  S.timer=setTimeout(()=>{ if(tok===S.tok&&!S.welcomed) tryFailed(); },18000);
+  // a direct link where the networks allow it, the relay where they don't (see raceConnect)
+  const dial=pr=>{ if(tok!==S.tok||S.conn) return; setStage('link',pr?'Found the game. Linking to the game screen…':'Linking to the game screen…');
+    const conn=raceConnect(pr,id,{reliable:true,serialization:'json'},cid,2500);
     S.conn=conn;
     conn.on('open',()=>{ if(S.conn!==conn) return; setStage('hello','Linked. Joining…'); send({t:'hello',cid,name:S.name||''}); });
     conn.on('data',d=>{ if(S.conn!==conn) return; S.lastRx=now(); try{ onData(d); }catch(e){ console.error(e); } });
-    conn.on('close',()=>{ if(S.conn===conn) lost(); });
-    conn.on('error',()=>{ if(S.conn===conn) lost(); });
-  });
+    conn.on('close',()=>{ if(S.conn!==conn) return; if(S.notHere&&!S.welcomed&&!S.reconnecting) notFound(); else lost(); }); };
+  if(!peer){ dial(null); return; }
+  // the game server is slow or blocked on this network: go straight through the relay
+  const slow=setTimeout(()=>{ if(tok===S.tok&&!S.conn) dial(null); },4000);
+  peer.on('open',()=>{ clearTimeout(slow); if(tok===S.tok) dial(peer); });
   peer.on('error',e=>{
     if(tok!==S.tok) return; const t=e&&e.type;
-    if(t==='peer-unavailable'){ if(S.reconnecting) tryFailed(); else notFound(); }
-    else if(t==='browser-incompatible') noRTC();
-    else if(!S.welcomed) tryFailed();
+    // no game with this code on the game server: the relay is the last place it could be
+    if(t==='peer-unavailable'){ S.notHere=true; if(S.conn) S.conn.noDirect(); else dial(null); return; }
+    if(!S.conn){ clearTimeout(slow); dial(null); }
   });
   peer.on('disconnected',()=>{ try{ if(S.peer===peer&&!peer.destroyed) peer.reconnect(); }catch(e){} });
 }
@@ -772,7 +884,7 @@ function failAt(st,ls){
   S.leaving=true; cleanup();
   const app=IN_APP?' If you opened this from a QR-scanner app, open the link in Chrome or Safari instead.':'';
   if(st==='server') msg("CAN'T REACH THE SERVER","This phone couldn't reach the game's connection server, so this network is probably blocking it. Switch between Wi-Fi and mobile data, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
-  else if(st==='link') msg("CAN'T LINK UP","This phone found the game, but its network wouldn't let it link to the game screen. Put the phone on the same Wi-Fi as the game screen, or switch between Wi-Fi and mobile data, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
+  else if(st==='link') msg("CAN'T LINK UP","This phone couldn't link to the game screen, even through the backup relay. Check that the game is still open on the game screen and that this phone is online, then try again."+app,'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
   else msg('NO ANSWER',"The phone linked up, but the game screen didn't answer. Reload the game on the game screen, then try again.",'TRY AGAIN',retryNow,'CHANGE CODE',changeCode);
   $('mDiag').textContent='Stopped at: '+({server:'game server',link:'linking to the game screen',hello:'joining'}[st]||st)+(ls?' · link: '+ls:'');
 }
@@ -1452,6 +1564,7 @@ function sendInput(force){
   const t=now();
   const k=S.mx+'|'+S.my+'|'+(S.up?1:0)+'|'+(S.dn?1:0)+'|'+(S.aim?1:0)+'|'+S.ax+'|'+S.ay+'|'+S.shot+'|'+S.bomb+'|'+(S.baim?1:0)+'|'+S.bx+'|'+S.by+'|'+S.w+'|'+S.st;
   if(!force&&k===S.lastKey&&t-S.lastSend<200) return;
+  if(!force&&S.conn.relay&&t-S.lastSend<60) return;
   S.lastKey=k; S.lastSend=t;
   send({t:'in',q:++S.seq,mx:S.mx,my:S.my,w:S.w,st:S.st,up:S.up?1:0,dn:S.dn?1:0,aim:S.aim?1:0,ax:S.ax,ay:S.ay,shot:S.shot,fx:S.fx,fy:S.fy,bomb:S.bomb,baim:S.baim?1:0,bx:S.bx,by:S.by,bm:S.bm});
 }

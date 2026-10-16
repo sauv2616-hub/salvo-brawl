@@ -816,7 +816,7 @@ html.phone .ht-cols,#app.touch .ht-cols{grid-template-columns:1fr;}
             <div class="room" id="roomCode">····</div>
             <div class="joinstatus" id="joinStatus">Opening a room…</div>
             <div class="joinurl" id="joinUrl"></div>
-            <div class="joinwarn" id="joinWarn" role="status" hidden>A phone found this game but couldn't link up. Put it on the same Wi-Fi as this computer, or switch it between Wi-Fi and mobile data, then tap TRY AGAIN on the phone.</div>
+            <div class="joinwarn" id="joinWarn" role="status" hidden>A phone found this game but couldn't link up. Check that the phone is online, then tap TRY AGAIN on it.</div>
             <div class="row" id="retryRow" hidden><button class="btn small" id="retryBtn" type="button">Try again</button></div>
           </div>
           <div class="invite" id="inviteRow" hidden><span class="room-l">Online invite</span><div class="invrow"><span class="joinurl" id="inviteUrl"></span><button class="btn small" id="copyInvite" type="button">Copy link</button></div></div>
@@ -1149,6 +1149,120 @@ function sha1(m){ const b=m.slice(), ml=m.length*8; b.push(128); while(b.length%
   const out=[]; [h0,h1,h2,h3,h4].forEach(h=>out.push((h>>>24)&255,(h>>>16)&255,(h>>>8)&255,h&255)); return out; }
 function hmacSha1(key,msg){ let k=key.length>64?sha1(key):key.slice(); while(k.length<64) k.push(0); return sha1(k.map(x=>x^0x5c).concat(sha1(k.map(x=>x^0x36).concat(msg)))); }
 function utf8(s){ return Array.from(unescape(encodeURIComponent(s)),c=>c.charCodeAt(0)); }
+// ---------- relay link: for when a direct link can't be made ----------
+// A direct (WebRTC) link only works when both networks let the two devices reach each other. Different networks,
+// mobile data, guest Wi-Fi and some browser privacy settings (Safari's among them) block it, and the free relay
+// servers for direct links come and go. So every link is dialled two ways at once: directly, and through a public
+// MQTT message relay over an ordinary secure web connection, which gets through almost any network. The direct
+// link gets a short head start and wins when it works (it's quicker); otherwise the relay carries the game.
+// Only game messages go through it (inputs, health, the scoreboard): nothing personal.
+const RELAY_URLS=(typeof window!=='undefined'&&Array.isArray(window.__SALVO_RELAY__))?window.__SALVO_RELAY__:
+  ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];
+const RELAY_ROOT='salvobrawl/r1/';
+// a tiny MQTT 3.1.1 client (QoS 0 only) over a secure WebSocket
+function mqttWS(url){
+  const ev={}, on=(k,f)=>{ (ev[k]=ev[k]||[]).push(f); }, emit=(k,a,b)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a,b); }catch(e){ console.error(e); } }); };
+  const te=new TextEncoder(), td=new TextDecoder();
+  const cat=(...a)=>{ let n=0; for(const x of a) n+=x.length; const o=new Uint8Array(n); let i=0; for(const x of a){ o.set(x,i); i+=x.length; } return o; };
+  const pkt=(head,body)=>{ const h=[head]; let x=body.length; do{ let d=x%128; x=Math.floor(x/128); if(x>0) d|=128; h.push(d); }while(x>0); return cat(Uint8Array.from(h),body); };
+  const lstr=s=>{ const b=te.encode(s); return cat(Uint8Array.of(b.length>>8,b.length&255),b); };
+  let ws=null, up=false, done=false, pid=1, ping=0, buf=new Uint8Array(0);
+  const raw=b=>{ try{ if(ws&&ws.readyState===1) ws.send(b); }catch(e){} };
+  const close=()=>{ if(done) return; done=true; up=false; clearInterval(ping); try{ if(ws.readyState===1) ws.send(Uint8Array.of(0xE0,0)); ws.close(); }catch(e){} emit('close'); };
+  const api={ on, get up(){ return up; }, close,
+    subscribe(t){ raw(pkt(0x82,cat(Uint8Array.of(pid>>8,pid&255),lstr(t),Uint8Array.of(0)))); pid=pid%65535+1; },
+    publish(t,s){ raw(pkt(0x30,cat(lstr(t),te.encode(s)))); } };
+  try{ ws=new WebSocket(url,['mqtt']); }catch(e){ setTimeout(close,0); return api; }
+  ws.binaryType='arraybuffer';
+  ws.onopen=()=>{ const id=('sb'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)).slice(0,23); raw(pkt(0x10,cat(lstr('MQTT'),Uint8Array.of(4,2,0,30),lstr(id)))); };
+  ws.onmessage=e=>{
+    if(!(e.data instanceof ArrayBuffer)) return; const b=new Uint8Array(e.data); buf=buf.length?cat(buf,b):b;
+    while(buf.length>=2){
+      let mul=1, len=0, i=1, ok=false;
+      while(i<buf.length&&i<=4){ const d=buf[i++]; len+=(d&127)*mul; mul*=128; if(!(d&128)){ ok=true; break; } }
+      if(!ok||buf.length<i+len) return;
+      const type=buf[0]>>4, fl=buf[0]&15, body=buf.subarray(i,i+len); buf=buf.subarray(i+len);
+      if(type===2){ if(body[1]===0){ up=true; ping=setInterval(()=>raw(Uint8Array.of(0xC0,0)),20000); emit('connect'); } else { close(); return; } }
+      else if(type===3){ const tl=(body[0]<<8)|body[1]; let p=2+tl; if((fl>>1)&3) p+=2; emit('message',td.decode(body.subarray(2,2+tl)),td.decode(body.subarray(p))); }
+      else if(type===9) emit('suback');
+    } };
+  ws.onclose=()=>{ if(done) return; done=true; up=false; clearInterval(ping); emit('close'); };
+  ws.onerror=()=>{};
+  return api;
+}
+// one end of a relay link; to the rest of the game it looks just like a direct link (on / send / close / open)
+function relayConn(cid,outTopic,dialer){
+  const ev={}, c={relay:true,open:false,closed:false,peer:'relay:'+cid,metadata:{},sock:null,lastRx:Date.now(),lastTx:0,onEnd:null,
+    on(k,f){ (ev[k]=ev[k]||[]).push(f); return c; },
+    send(d){ if(c.open) c.raw({k:'d',d}); },
+    close(){ if(c.closed) return; c.raw({k:'b'}); c.end(); } };
+  c.emit=(k,a)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a); }catch(e){ console.error(e); } }); };
+  c.raw=o=>{ if(!c.sock) return; if(dialer) o.c=cid; try{ c.sock.publish(outTopic,JSON.stringify(o)); c.lastTx=Date.now(); }catch(e){} };
+  c.up=()=>{ if(c.open||c.closed) return; c.open=true; c.lastRx=Date.now(); c.emit('open'); };
+  c.rx=o=>{ c.lastRx=Date.now(); if(o.k==='d'){ if(c.open) c.emit('data',o.d); } else if(o.k==='b') c.end(); else if(o.k==='w'&&dialer) c.up(); };
+  c.end=()=>{ if(c.closed) return; c.closed=true; c.open=false; clearInterval(c.tick); if(c.onEnd) c.onEnd(); c.emit('close'); };
+  // the other end is gone if nothing arrives for a while (a dialer that nobody answers gives up sooner)
+  c.tick=setInterval(()=>{ const n=Date.now(); if(n-c.lastRx>(c.open||!dialer?12000:7000)) c.end(); else if(c.open&&n-c.lastTx>2500) c.raw({k:'p'}); },1000);
+  return c;
+}
+// the phone (or online player) end: use whichever relay answers first, then say hello until the game screen answers
+function relayDial(id,cid,meta){
+  const root=RELAY_ROOT+id, c=relayConn(cid,root+'/h',true), socks=[]; let hello=0, left=RELAY_URLS.length;
+  c.metadata=meta||{};
+  c.onEnd=()=>{ clearInterval(hello); socks.forEach(s=>s.close()); };
+  RELAY_URLS.forEach(u=>{ const s=mqttWS(u); socks.push(s);
+    s.on('connect',()=>{ if(c.sock||c.closed){ s.close(); return; } c.sock=s; s.subscribe(root+'/c/'+cid); socks.forEach(o=>{ if(o!==s) o.close(); }); });
+    s.on('suback',()=>{ if(c.sock!==s||c.closed) return; c.lastRx=Date.now(); const hi=()=>{ if(c.open||c.closed){ clearInterval(hello); return; } c.raw({k:'h',m:c.metadata}); }; hi(); clearInterval(hello); hello=setInterval(hi,1000); });
+    s.on('message',(t,str)=>{ if(c.sock!==s) return; let o=null; try{ o=JSON.parse(str); }catch(e){} if(o&&typeof o==='object') c.rx(o); });
+    s.on('close',()=>{ if(c.sock===s) c.end(); else if(!c.sock&&--left<=0) c.end(); }); });
+  return c;
+}
+// the game screen end: listen on every relay at once, so a phone can come in through whichever one it reaches
+function relayHost(id,onConn,onReady){
+  const H={on:true,socks:[],peers:{},ready:false}, root=RELAY_ROOT+id;
+  const open=(u,n)=>{ if(!H.on) return; const s=mqttWS(u); H.socks.push(s);
+    s.on('connect',()=>{ n=0; s.subscribe(root+'/h'); });
+    s.on('suback',()=>{ if(!H.ready){ H.ready=true; if(onReady) try{ onReady(); }catch(e){ console.error(e); } } });
+    s.on('message',(t,str)=>{ if(!H.on) return; let o=null; try{ o=JSON.parse(str); }catch(e){} if(!o||typeof o!=='object') return;
+      const cid=String(o.c||'').slice(0,40); if(!cid) return; let c=H.peers[cid];
+      if(o.k==='h'){
+        if(!c||c.closed){ c=relayConn(cid,root+'/c/'+cid,false); c.sock=s; c.metadata=o.m&&typeof o.m==='object'?o.m:{}; H.peers[cid]=c; const me=c; c.onEnd=()=>{ if(H.peers[cid]===me) delete H.peers[cid]; }; onConn(c); c.up(); }
+        c.sock=s; c.lastRx=Date.now(); c.raw({k:'w'}); return; }
+      // a phone still talking to a game screen that has since reloaded: tell it to start over
+      if(!c){ if(o.k!=='b') s.publish(root+'/c/'+cid,JSON.stringify({k:'b'})); return; }
+      c.sock=s; c.rx(o); });
+    s.on('close',()=>{ H.socks=H.socks.filter(x=>x!==s); if(H.on) setTimeout(()=>open(u,n+1),Math.min(30000,2000*(n+1))); }); };
+  RELAY_URLS.forEach(u=>open(u,0));
+  H.stop=()=>{ if(!H.on) return; H.on=false; Object.values(H.peers).forEach(c=>c.close()); H.socks.forEach(s=>s.close()); H.socks=[]; };
+  return H;
+}
+// Dial a game screen both ways: directly, and after `delay` ms (or as soon as the direct link fails) through the relay.
+// Whichever opens first carries the game; the other is dropped. Looks like a single link to the caller.
+function raceConnect(peer,id,opts,cid,delay,meta){
+  let direct=null, relay=null, rT=0;
+  const ev={}, R={open:false,closed:false,relay:false,win:null,metadata:meta||{},
+    on(k,f){ (ev[k]=ev[k]||[]).push(f); return R; },
+    send(d){ if(R.open&&R.win) R.win.send(d); },
+    close(){ end(); },
+    get peerConnection(){ return direct&&direct.peerConnection||null; } };
+  const emit=(k,a)=>{ (ev[k]||[]).forEach(f=>{ try{ f(a); }catch(e){ console.error(e); } }); };
+  const kill=c=>{ if(!c) return; c._dead=true; try{ c.close(); }catch(e){} };
+  const end=()=>{ if(R.closed) return; R.closed=true; R.open=false; clearTimeout(rT); kill(direct); kill(relay); emit('close'); };
+  const startRelay=()=>{ if(relay||R.win||R.closed) return; clearTimeout(rT); relay=relayDial(id,cid,R.metadata); wire(relay); };
+  const lose=()=>{ if(R.win||R.closed) return; const dd=!direct||direct._dead; if(!relay){ if(dd) startRelay(); } else if(relay._dead&&dd) end(); };
+  const wire=c=>{
+    c.on('open',()=>{ if(R.closed||(R.win&&R.win!==c)){ kill(c); return; } if(R.win) return;
+      R.win=c; R.open=true; R.relay=!!c.relay; clearTimeout(rT); kill(c===direct?relay:direct); emit('open'); });
+    c.on('data',d=>{ if(R.win===c) emit('data',d); });
+    const gone=()=>{ if(R.win===c){ if(!R.closed){ c._dead=true; end(); } return; } if(c._dead) return; c._dead=true; lose(); };
+    c.on('close',gone); c.on('error',gone); };
+  R.startRelay=startRelay;
+  // the game server says there's no such room: stop waiting on a direct link and try the relay
+  R.noDirect=()=>{ if(R.win||R.closed) return; kill(direct); direct=null; startRelay(); if(relay&&relay._dead) end(); };
+  if(peer){ try{ direct=peer.connect(id,opts); wire(direct); }catch(e){ direct=null; } }
+  rT=setTimeout(startRelay,direct?delay:0);
+  return R;
+}
 function rtcConfig(){
   const list=[{urls:['stun:stun.l.google.com:19302','stun:stun.cloudflare.com:3478']},
     {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}];
@@ -4901,6 +5015,9 @@ function openRoom(reuse){
   NET.code=(reuse&&NET.code)||savedCode()||genCode(); NET.ok=false; setNet('connecting');
   let peer; try{ peer=new NET.P(PEER_PREFIX+NET.code.toLowerCase(),{debug:0,config:rtcConfig()}); }catch(e){ setNet('unavailable'); return; }
   NET.peer=peer; const me=peer;
+  if(NET.relay) NET.relay.stop();
+  const rh=relayHost(PEER_PREFIX+NET.code.toLowerCase(),c=>{ if(NET.relay===rh) wireConn(c); },()=>{ if(NET.relay===rh&&!NET.ok){ NET.ok=true; try{ localStorage.setItem('salvo-ol-room',NET.code); }catch(e){} setNet('ready'); } });
+  NET.relay=rh;
   peer.on('open',()=>{ if(NET.peer!==me) return; NET.ok=true; NET.taken=0; try{ localStorage.setItem('salvo-ol-room',NET.code); }catch(e){} setNet('ready'); });
   peer.on('connection',conn=>{ if(NET.peer!==me) return; wireConn(conn); });
   peer.on('disconnected',()=>{ if(NET.peer!==me) return; if(NET.ok) setNet('reconnecting'); setTimeout(()=>{ try{ if(!me.destroyed) me.reconnect(); }catch(e){} },1500); });
@@ -4913,12 +5030,13 @@ function openRoom(reuse){
 }
 function setNet(s){ NET.status=s; renderJoin(); }
 function wireConn(conn){
-  let linked=false, gone=false;
+  let linked=false, gone=false; const t0=Date.now();
+  const warn=()=>setTimeout(()=>{ if((NET.joinedAt||0)<t0) joinWarn(true); },9000);
   conn.on('open',()=>{ linked=true; joinWarn(false); });
-  setTimeout(()=>{ if(!linked&&!gone) joinWarn(true); },14000);
+  setTimeout(()=>{ if(!linked&&!gone) warn(); },14000);
   conn.on('data',d=>{ linked=true; try{ onMsg(conn,d); }catch(e){ console.error(e); } });
-  conn.on('close',()=>{ if(!linked&&!gone) joinWarn(true); gone=true; onConnClose(conn); });
-  conn.on('error',()=>{ if(!linked&&!gone) joinWarn(true); gone=true; onConnClose(conn); });
+  conn.on('close',()=>{ if(!linked&&!gone) warn(); gone=true; onConnClose(conn); });
+  conn.on('error',()=>{ if(!linked&&!gone) warn(); gone=true; onConnClose(conn); });
 }
 // A phone that found the room but never linked is almost always a network problem, so say what to try.
 function joinWarn(on){ const el=$('joinWarn'); if(!el) return; clearTimeout(NET.warnT); el.hidden=!on; if(on){ NET.warnT=setTimeout(()=>{ el.hidden=true; },30000); } }
@@ -4927,7 +5045,7 @@ function buzz(p,pattern,snd){ if(p&&p.src==='touch'){ vibe(pattern); return; } i
 function tankInfo(){ return TANKS.map(t=>({name:t.name,role:t.role,perk:t.perk,pips:t.pips,shape:t.shape})); }
 function onMsg(conn,d){
   if(!d||typeof d!=='object') return;
-  if(d.t==='hello'){ conn._nm=cleanName(d.name); handleHello(conn,String(d.cid||'').slice(0,40),!!d.screen); return; }
+  if(d.t==='hello'){ NET.joinedAt=Date.now(); conn._nm=cleanName(d.name); handleHello(conn,String(d.cid||'').slice(0,40),!!d.screen); return; }
   const p=G.players.find(x=>x&&x.conn===conn); if(!p) return;
   if(d.t==='in'){ if(typeof d.q==='number'){ if(d.q<=p.lastQ) return; p.lastQ=d.q; } p.inAge=0; const I=p.input; I.mx=num(d.mx,-1,1); I.up=!!d.up; I.dn=!!d.dn; I.aim=!!d.aim; I.ax=num(d.ax,-1,1); I.ay=num(d.ay,-1,1); I.shot=d.shot|0; I.fx=num(d.fx,-1,1); I.fy=num(d.fy,-1,1); I.bomb=d.bomb|0; I.baim=!!d.baim; I.bx=num(d.bx,-1,1); I.by=num(d.by,-1,1); I.bm=!!d.bm; I.my=num(d.my,-1,1); I.w=typeof d.w==='number'?clamp(d.w|0,0,WEAPONS.length-1):-1; I.st=d.st|0;
     if(p.lastShot===null) p.lastShot=I.shot; if(p.lastBomb===null) p.lastBomb=I.bomb; if(p.lastSt===null) p.lastSt=I.st;
@@ -5716,40 +5834,44 @@ function olConnect(){
   OL.mycode=genCode(); OL.peerOpen=false;
   let peer; try{ peer=new P(PEER_PREFIX+OL.mycode.toLowerCase(),{debug:0,config:rtcConfig()}); }catch(e){ olReset('Online play could not start in this browser.'); return; }
   OL.peer=peer;
-  peer.on('open',()=>{ if(OL.peer!==peer) return; OL.peerOpen=true; olDial(); renderGuestPad(); });
+  if(OL.padRelay) OL.padRelay.stop(); OL.relayReady=false;
+  const pr=relayHost(PEER_PREFIX+OL.mycode.toLowerCase(),c=>{ if(OL.padRelay===pr) olPadConn(c); },()=>{ if(OL.padRelay===pr){ OL.relayReady=true; renderGuestPad(); } });
+  OL.padRelay=pr;
+  // the game server is slow or blocked on this network: go through the relay
+  const slow=setTimeout(()=>{ if(OL.peer===peer&&!OL.peerOpen&&!OL.conn&&!OL.leaving&&G.role==='guest') olDial(); },4000);
+  peer.on('open',()=>{ clearTimeout(slow); if(OL.peer!==peer) return; OL.peerOpen=true; if(!OL.conn) olDial(); renderGuestPad(); });
   peer.on('connection',c=>{ if(OL.peer!==peer) return; olPadConn(c); });
   peer.on('disconnected',()=>{ if(OL.peer!==peer) return; setTimeout(()=>{ try{ if(!peer.destroyed) peer.reconnect(); }catch(e){} },1500); });
   peer.on('error',err=>{ if(OL.peer!==peer) return; const t=err&&err.type;
     if(t==='unavailable-id'){ try{ peer.destroy(); }catch(e){} OL.peer=null; olConnect(); return; }
-    if(t==='peer-unavailable'){ if(OL.linked) olLost(); else olReset('No game is open with room code '+OL.code+'. Check the code on the host’s screen, or ask them to open the room again.'); return; }
-    if(!OL.peerOpen&&!OL.linked) olReset('Couldn’t reach the game server. Check your internet connection and try again.');
-    else if(OL.linked) olLost(); });
-  setTimeout(()=>{ if(OL.peer===peer&&!OL.peerOpen&&!OL.leaving&&G.role==='guest') olReset('Couldn’t reach the game server. Check your internet connection and try again.'); },15000);
+    if(t==='peer-unavailable'){ if(OL.conn&&!OL.conn.open&&!OL.welcomed){ OL.notHere=true; OL.conn.noDirect(); return; } if(OL.linked) olLost(); else olReset('No game is open with room code '+OL.code+'. Check the code on the host’s screen, or ask them to open the room again.'); return; }
+    if(!OL.peerOpen&&!OL.linked){ clearTimeout(slow); if(!OL.conn) olDial(); return; }
+    if(OL.linked) olLost(); });
 }
 function olDial(){
   if(OL.conn){ const o=OL.conn; OL.conn=null; try{ o.close(); }catch(e){} }
   olStatus(OL.linked?'reconnecting':'connecting');
-  let c; try{ c=OL.peer.connect(PEER_PREFIX+OL.code.toLowerCase(),{reliable:true,serialization:'json'}); }catch(e){ olLost(); return; }
+  OL.notHere=false;
+  const c=raceConnect(OL.peerOpen&&OL.peer&&!OL.peer.destroyed?OL.peer:null,PEER_PREFIX+OL.code.toLowerCase(),{reliable:true,serialization:'json'},OL.cid,2500);
   OL.conn=c;
   c.on('open',()=>{ if(OL.conn!==c) return; c.send({t:'hello',cid:OL.cid,screen:true,v:1,name:OL.myName||''}); });
   c.on('data',d=>{ if(OL.conn!==c) return; try{ olMsg(d); }catch(e){ console.error(e); } });
-  c.on('close',()=>{ if(OL.conn!==c) return; olLost(); });
-  c.on('error',()=>{ if(OL.conn!==c) return; olLost(); });
-  setTimeout(()=>{ if(OL.conn!==c||OL.welcomed||OL.leaving) return; if(OL.linked) olLost(); else olReset('Found room '+OL.code+' but couldn’t link up with it. One of the networks is blocking the connection. Try a different network (a phone hotspot often works), then join again.'); },16000);
+  c.on('close',()=>{ if(OL.conn!==c) return; if(OL.notHere&&!OL.welcomed&&!OL.linked) olReset('No game is open with room code '+OL.code+'. Check the code on the host’s screen, or ask them to open the room again.'); else olLost(); });
+  setTimeout(()=>{ if(OL.conn!==c||OL.welcomed||OL.leaving) return; if(OL.linked) olLost(); else olReset('Found room '+OL.code+' but couldn’t link up with it, even through the backup relay. Check that the host’s game is still open, then join again.'); },20000);
 }
 function olLost(){
   if(OL.leaving||G.role!=='guest') return;
   OL.welcomed=false; $('olLost').hidden=false;
   if(OL.retryT) return;
   if(++OL.tries>20){ olReset('Lost the connection to the host. Check that their game is still open, then join again.'); return; }
-  OL.retryT=setTimeout(()=>{ OL.retryT=0; if(OL.leaving||G.role!=='guest') return; if(!OL.peer||OL.peer.destroyed||!OL.peerOpen){ OL.peer=null; olConnect(); } else olDial(); },2000);
+  OL.retryT=setTimeout(()=>{ OL.retryT=0; if(OL.leaving||G.role!=='guest') return; if(!OL.peer||OL.peer.destroyed){ OL.peer=null; olConnect(); } else olDial(); },2000);
 }
 function olLeave(){ SFX.ui(); olSend({t:'leave'}); setTimeout(()=>olReset(''),120); }
 // back to the start screen with everything from the room cleared away
 function olReset(msg){
   OL.leaving=true; clearTimeout(OL.retryT); OL.retryT=0;
   try{ if(OL.pad.conn) OL.pad.conn.send({t:'kicked'}); }catch(e){}
-  const c=OL.conn, pc=OL.pad.conn, pe=OL.peer; OL.conn=null; OL.pad.conn=null; OL.peer=null;
+  const c=OL.conn, pc=OL.pad.conn, pe=OL.peer; OL.conn=null; OL.pad.conn=null; OL.peer=null; if(OL.padRelay){ OL.padRelay.stop(); OL.padRelay=null; } OL.relayReady=false;
   setTimeout(()=>{ try{ c&&c.close(); }catch(e){} try{ pc&&pc.close(); }catch(e){} try{ pe&&pe.destroy(); }catch(e){} },200);
   try{ sessionStorage.removeItem('salvo-ol-role'); }catch(e){}
   olClearProjectiles(); clearFX(); clearTanks(); G.players=G.players.map(()=>null);
@@ -6121,7 +6243,7 @@ function renderGSlots(){
 }
 function renderGuestPad(){
   if(G.role!=='guest') return;
-  const qr=$('gQr'), ok=OL.peerOpen&&OL.mycode, url=ok?controllerUrl(OL.mycode):'';
+  const qr=$('gQr'), ok=(OL.peerOpen||OL.relayReady)&&OL.mycode, url=ok?controllerUrl(OL.mycode):'';
   $('gPadCode').textContent=ok?OL.mycode:'····';
   $('gPadUrl').textContent=ok?url.replace(/^https?:\/\//,''):'';
   const svg=ok?qrSVG(url):'';
